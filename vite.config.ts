@@ -8,7 +8,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/components/index.ts'),
-      name: 'VertEasydocVue',
+      name: 'vert-doc',
       fileName: (format) => `vert-easydoc-vue.${format}.js`,
     },
     rollupOptions: {
@@ -22,5 +22,23 @@ export default defineConfig({
       },
     },
   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
   plugins: [vue(), dts({ insertTypesEntry: true })],
+  // css: {
+  //   preprocessorOptions: {
+  //     scss: {
+  //       additionalData: `
+  //         @import "${path.resolve(
+  //           __dirname,
+  //           'src/assets/styles/variables/_brand.scss'
+  //         )}"
+  //         @import "${path.resolve(__dirname, 'src/assets/styles/index.scss')}"
+  //       `,
+  //     },
+  //   },
+  // },
 });
