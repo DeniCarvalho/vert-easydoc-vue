@@ -5,20 +5,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#5eb1c6',
+        primary: '#123229',
         primaryMedium: '#004649',
-        primaryLight: '#7f5ec6',
-        primaryPure: '#00747a',
+        primaryLight: '#E6F1F2',
+        primaryPure: '#00747A',
         primaryPureLight: '#00747a0e',
-        secondary: '#acd094',
-        secondaryMedium: '#557b7f',
-        secondaryLight: '#99d4d0',
-        tertiary: '#fcd250',
         error: '#f07363',
         warning: '#fcd250',
         success: '#92c65e',
         fontLight: '#a1a1a4',
-        disabledPure: '#fcd250',
+        disabledPure: '#e9e9e9',
       },
       fontFamily: {
         opensans: ['Open Sans', 'sans-serif'],

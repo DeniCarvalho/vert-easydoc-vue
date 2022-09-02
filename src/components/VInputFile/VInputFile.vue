@@ -1,5 +1,5 @@
 <template>
-  <div id="input-file-ved" class="ved-w-full">
+  <div id="input-file-ved" class="ved-w-full ved-relative">
     <label
       @mouseenter="start"
       @mouseleave="reverse"
@@ -10,19 +10,18 @@
       :class="{
         'hover:ved-border-primaryPure hover:ved-bg-primaryPureLight': isHover,
       }"
-      class="ved-w-full ved-h-auto ved-relative ved-group ved-px-10 ved-py-5 ved-flex ved-flex-col ved-justify-center ved-cursor-pointer ved-items-center ved-border-2 ved-rounded-lg ved-border-disabledPure ved-border-dashed ved-duration-1000"
+      class="ved-w-auto ved-h-auto ved-relative ved-group ved-py-5 ved-flex ved-flex-col ved-justify-center ved-cursor-pointer ved-items-center ved-border-2 ved-rounded-lg ved-border-disabledPure ved-border-dashed ved-duration-1000"
     >
-      <!-- <lottie-animation
+      <lottie-animation
         id="animRef"
         ref="animRef"
         :loop="false"
         :autoPlay="false"
         :speed="1"
-        :animationData="require('@/resources/animation/upload-file.json')"
+        :animationData="animationData"
         @complete="complete"
-        class="h-28"
-      /> -->
-      <div class="ved-h-28 ved-w-28"></div>
+        class="ved-h-28"
+      />
 
       <div
         class="ved-text-primary ved-text-center ved-text-sm sm:ved-text-base"
@@ -55,15 +54,41 @@
       name="select-file"
       accept=".doc,.docx,application/pdf"
     />
+    <div
+      class="ved-w-auto ved-h-auto ved-relative ved-flex ved-justify-between ved-items-center ved-p-2 ved-rounded-lg ved-bg-primaryPureLight ved-mt-1 ved-border-0 ved-border-l-4 ved-border-primaryPure"
+    >
+      <div class="ved-w-auto ved-flex ved-items-center">
+        <Icon :icon="CheckCircle" class="ved-text-success ved-h-6" />
+        <div class="ved-text-primaryPure ved-cursor-pointer ved-ml-2">
+          Modelo contrato
+        </div>
+      </div>
+      <div class="ved-w-auto ved-flex ved-items-center">
+        <Icon
+          :icon="Download"
+          :size="18"
+          class="ved-text-primaryPure ved-mr-2"
+        />
+        <Icon :icon="TrashCan" :size="18" class="ved-text-primaryPure" />
+      </div>
+    </div>
   </div>
 </template>
 <style lang="scss" src="./VInputFile.scss" />
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue';
+import CheckCircle from 'vue-material-design-icons/CheckCircle.vue';
+import TrashCan from 'vue-material-design-icons/TrashCan.vue';
+import Download from 'vue-material-design-icons/Download.vue';
+import Icon from '@/widgets/Icon/Icon.vue';
+import animationData from '@/assets/animation/upload-file.json';
+
+import { IPage, PageModel } from '@/models/page.model';
+import { DocumentModel, IDocument } from '@/models/document.model';
 
 export default defineComponent({
-  name: 'VInputFile',
-  components: {},
+  name: 'VSInput',
+  components: { Icon },
   setup() {
     const animRef = ref<any>(null);
     const fileRef = ref<any>(null);
@@ -71,6 +96,7 @@ export default defineComponent({
     const isHover = ref(false);
 
     const documentFile = ref<File>();
+    const document = ref<IDocument>();
 
     const start = () => {
       isHover.value = true;
@@ -103,6 +129,8 @@ export default defineComponent({
         console.log(documentFile.value);
         const formData = new FormData();
         formData.append('file', documentFile.value);
+
+        fileRef.value.value = '';
       } catch (error) {
         console.log(error);
       }
@@ -144,12 +172,16 @@ export default defineComponent({
       modalRef,
       isHover,
       document,
+      animationData,
       start,
       complete,
       reverse,
       onFileChange,
       onDrop,
       close,
+      CheckCircle,
+      TrashCan,
+      Download,
     };
   },
 });

@@ -1,10 +1,7 @@
 <template>
-  <div
-    class="ved-w-full ved-flex ved-flex-col ved-justify-center ved-items-center ved-p-5"
-  >
-    <div class="ved-w-full md:ved-w-6/12">
-      <VInputFile class="" />
-    </div>
+  <div class="ved-container ved-mx-auto ved-w-2/3 ved-flex ved-flex-col">
+    <h1 class="ved-text-center">Vert Easydoc</h1>
+    <VInputFile class="" />
   </div>
 </template>
 

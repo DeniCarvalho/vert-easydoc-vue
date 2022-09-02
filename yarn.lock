@@ -808,6 +808,19 @@ lodash@~4.17.15:
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
+lottie-web-vue@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/lottie-web-vue/-/lottie-web-vue-2.0.6.tgz#c92c8f5658b372b04c63f3d4e85cec46e20cf63d"
+  integrity sha512-xtdzuYsLoyiTcGWprJXnVu+tRza5T0OJuPzI5o4x+A+QrlifBLaDzUBX4EPye+mGJ/Nzd83lWtOJpknuFHpPCw==
+  dependencies:
+    lottie-web "^5.8.1"
+    vue "^3.2.29"
+
+lottie-web@^5.8.1:
+  version "5.9.6"
+  resolved "https://registry.yarnpkg.com/lottie-web/-/lottie-web-5.9.6.tgz#62ae68563355d3e04aa75d53dec3dd4bea0e57c9"
+  integrity sha512-JFs7KsHwflugH5qIXBpB4905yC1Sub2MZWtl/elvO/QC6qj1ApqbUZJyjzJseJUtVpgiDaXQLjBlIJGS7UUUXA==
+
 lru-cache@^6.0.0:
   version "6.0.0"
   resolved "https://registry.npmjs.org/lru-cache/-/lru-cache-6.0.0.tgz"
@@ -1203,6 +1216,11 @@ vite@^3.0.7:
   optionalDependencies:
     fsevents "~2.3.2"
 
+vue-material-design-icons@^5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/vue-material-design-icons/-/vue-material-design-icons-5.1.2.tgz#d0b9227786672fc17be239fb8c1d8e22e33feb45"
+  integrity sha512-nD1qFM2qAkMlVoe23EfNKIeMfYl6YjHZjSty9q0mwc2gXmPmvEhixywJQhM+VF5KVBI1zAkVTNLoUEERPY10pA==
+
 vue-tsc@^0.39.5:
   version "0.39.5"
   resolved "https://registry.npmjs.org/vue-tsc/-/vue-tsc-0.39.5.tgz"
@@ -1211,7 +1229,7 @@ vue-tsc@^0.39.5:
     "@volar/vue-language-core" "0.39.5"
     "@volar/vue-typescript" "0.39.5"
 
-vue@^3.2.37:
+vue@^3.2.29, vue@^3.2.37:
   version "3.2.38"
   resolved "https://registry.npmjs.org/vue/-/vue-3.2.38.tgz"
   integrity sha512-hHrScEFSmDAWL0cwO4B6WO7D3sALZPbfuThDsGBebthrNlDxdJZpGR3WB87VbjpPh96mep1+KzukYEhpHDFa8Q==
