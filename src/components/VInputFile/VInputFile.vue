@@ -13,7 +13,7 @@
       class="ved-w-auto ved-h-auto ved-relative ved-group ved-py-5 ved-flex ved-flex-col ved-justify-center ved-cursor-pointer ved-items-center ved-border-2 ved-rounded-lg ved-border-disabledPure ved-border-dashed ved-duration-1000"
     >
       <lottie-animation
-        id="animRef"
+        id="anim-ref-ved"
         ref="animRef"
         :loop="false"
         :autoPlay="false"
@@ -39,11 +39,11 @@
       </div>
 
       <div
-        id="info"
+        id="info-icon-ved"
         class="ved-absolute ved-top-2 ved-right-2 ved-cursor-pointer"
       >
-        <div class="icon ved-absolute ved-z-50 ved-text-xs">&#8505;</div>
-        <div class="blob color ved-relative ved-z-40"></div>
+        <div class="icon-ved ved-absolute ved-z-50 ved-text-xs">&#8505;</div>
+        <div class="blob-ved color-ved ved-relative ved-z-40"></div>
       </div>
     </label>
     <input
@@ -72,6 +72,7 @@
         <Icon :icon="TrashCan" :size="18" class="ved-text-primaryPure" />
       </div>
     </div>
+    <Modal ref="modalRef" :file="document" />
   </div>
 </template>
 <style lang="scss" src="./VInputFile.scss" />
@@ -80,15 +81,17 @@ import { defineComponent, onMounted, onUnmounted, ref } from 'vue';
 import CheckCircle from 'vue-material-design-icons/CheckCircle.vue';
 import TrashCan from 'vue-material-design-icons/TrashCan.vue';
 import Download from 'vue-material-design-icons/Download.vue';
-import Icon from '@/widgets/Icon/Icon.vue';
-import animationData from '@/assets/animation/upload-file.json';
+import { Modal, Icon } from '../../widgets';
 
+import animationData from '@/assets/animation/upload-file.json';
+// import { Modal } from '@/widgets/Modal';
+import axios from 'axios';
 import { IPage, PageModel } from '@/models/page.model';
 import { DocumentModel, IDocument } from '@/models/document.model';
 
 export default defineComponent({
   name: 'VSInput',
-  components: { Icon },
+  components: { Icon, Modal },
   setup() {
     const animRef = ref<any>(null);
     const fileRef = ref<any>(null);
@@ -130,7 +133,27 @@ export default defineComponent({
         const formData = new FormData();
         formData.append('file', documentFile.value);
 
+        const { data } = await axios.post(
+          'http://localhost:5005/go',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        const pages: IPage[] = data.pages.map((page: any) =>
+          PageModel.fromJson(page)
+        );
+        document.value = new DocumentModel({
+          name: name ?? '',
+          extension: extension ?? '',
+          pages,
+          file: documentFile.value,
+        });
+
         fileRef.value.value = '';
+        modalRef.value?.openDocumentRef();
       } catch (error) {
         console.log(error);
       }

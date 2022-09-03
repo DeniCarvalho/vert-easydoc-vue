@@ -28,17 +28,4 @@ export default defineConfig({
     },
   },
   plugins: [vue(), dts({ insertTypesEntry: true })],
-  // css: {
-  //   preprocessorOptions: {
-  //     scss: {
-  //       additionalData: `
-  //         @import "${path.resolve(
-  //           __dirname,
-  //           'src/assets/styles/variables/_brand.scss'
-  //         )}"
-  //         @import "${path.resolve(__dirname, 'src/assets/styles/index.scss')}"
-  //       `,
-  //     },
-  //   },
-  // },
 });

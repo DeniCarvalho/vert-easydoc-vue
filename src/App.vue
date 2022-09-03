@@ -1,7 +1,7 @@
 <template>
   <div class="ved-container ved-mx-auto ved-w-2/3 ved-flex ved-flex-col">
     <h1 class="ved-text-center">Vert Easydoc</h1>
-    <VInputFile class="" />
+    <VInputFile />
   </div>
 </template>
 
