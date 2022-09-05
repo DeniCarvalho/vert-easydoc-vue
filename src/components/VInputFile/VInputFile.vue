@@ -1,5 +1,5 @@
 <template>
-  <div id="input-file-ved" class="ved-w-full ved-relative">
+  <div id="input-file-ved" ref="inputFileVed" class="ved-w-full ved-relative">
     <label
       @mouseenter="start"
       @mouseleave="reverse"
@@ -26,16 +26,18 @@
       <div
         class="ved-text-primary ved-text-center ved-text-sm sm:ved-text-base"
       >
-        <span class="ved-cursor-pointer ved-font-bold ved-text-primaryPure"
-          >Clique</span
-        >
-        ou arraste o documento
+        <span class="ved-cursor-pointer ved-font-bold ved-text-primaryPure">
+          {{ configComponent.labels.browserLink }}
+        </span>
+        {{ configComponent.labels.dragDrop }}
       </div>
       <div class="ved-text-fontLight ved-text-xs ved-mt-1 ved-text-center">
-        Suporta: PDF, DOCX, DOC
+        {{ configComponent.labels.supportedTypes }}:
+        {{ configComponent.settings.supportedTypes }}
       </div>
       <div class="ved-text-fontLight ved-text-xs ved-text-center">
-        Tamanho: 10MB
+        {{ configComponent.labels.maxSize }}:
+        {{ configComponent.settings.maxSize }}
       </div>
 
       <div
@@ -60,7 +62,7 @@
       <div class="ved-w-auto ved-flex ved-items-center">
         <Icon :icon="CheckCircle" class="ved-text-success ved-h-6" />
         <div class="ved-text-primaryPure ved-cursor-pointer ved-ml-2">
-          Modelo contrato
+          {{ fileName }}
         </div>
       </div>
       <div class="ved-w-auto ved-flex ved-items-center">
@@ -77,22 +79,104 @@
 </template>
 <style lang="scss" src="./VInputFile.scss" />
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue';
+import {
+  defineComponent,
+  onMounted,
+  onUnmounted,
+  PropType,
+  ref,
+  watch,
+} from 'vue';
 import CheckCircle from 'vue-material-design-icons/CheckCircle.vue';
 import TrashCan from 'vue-material-design-icons/TrashCan.vue';
 import Download from 'vue-material-design-icons/Download.vue';
 import { Modal, Icon } from '../../widgets';
-
 import animationData from '@/assets/animation/upload-file.json';
-// import { Modal } from '@/widgets/Modal';
-import axios from 'axios';
 import { IPage, PageModel } from '@/models/page.model';
 import { DocumentModel, IDocument } from '@/models/document.model';
+import { SizeEnum } from '@/enums/size.enum';
 
 export default defineComponent({
   name: 'VSInput',
   components: { Icon, Modal },
-  setup() {
+  props: {
+    fileName: {
+      type: String,
+      default: 'Document template',
+    },
+    settings: {
+      type: Object as () => {
+        supportedTypes?: string;
+        maxSize?: string;
+        endpoint?: string;
+        apiToken?: string;
+      },
+      required: false,
+    },
+    colors: {
+      type: Object as () => {
+        primary?: string;
+        secondary?: string;
+      },
+      required: false,
+    },
+    labels: {
+      type: Object as () => {
+        browserLink?: string;
+        dragDrop?: string;
+        supportedTypes?: string;
+        maxSize?: string;
+      },
+      required: false,
+    },
+    size: {
+      type: String as PropType<SizeEnum>,
+      default: SizeEnum.Medium,
+    },
+  },
+  setup(props) {
+    const configComponent = ref<any>({
+      settings: {
+        ...{
+          supportedTypes: 'PDF, DOCX, DOC',
+          maxSize: '10MB',
+          endpoint: 'https://api.ved.com.br/v1/upload',
+          apiToken: '',
+        },
+        ...props.settings,
+      },
+      labels: {
+        ...{
+          browserLink: 'Click',
+          dragDrop: 'or drag the document',
+          supportedTypes: 'Supports',
+          maxSize: 'Size',
+        },
+        ...props.labels,
+      },
+      colors: {
+        ...{
+          primary: null,
+          secondary: null,
+        },
+        ...props.colors,
+      },
+      size: props.size,
+    });
+
+    watch(
+      () => props,
+      (value) => {
+        if (value) {
+          configComponent.value = {
+            ...configComponent.value,
+            ...value,
+          };
+        }
+      }
+    );
+
+    const inputFileVed = ref<HTMLDivElement | null>(null);
     const animRef = ref<any>(null);
     const fileRef = ref<any>(null);
     const modalRef = ref<any>(null);
@@ -133,15 +217,12 @@ export default defineComponent({
         const formData = new FormData();
         formData.append('file', documentFile.value);
 
-        const { data } = await axios.post(
-          'http://localhost:5005/go',
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
-        );
+        const response = await fetch('http://localhost:5005/go', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await response.json();
+
         const pages: IPage[] = data.pages.map((page: any) =>
           PageModel.fromJson(page)
         );
@@ -190,6 +271,8 @@ export default defineComponent({
     });
 
     return {
+      configComponent,
+      inputFileVed,
       animRef,
       fileRef,
       modalRef,
