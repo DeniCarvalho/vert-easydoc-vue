@@ -8,7 +8,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/components/index.ts'),
-      name: 'vert-doc',
+      name: 'vert-easydoc-vue',
       fileName: (format) => `vert-easydoc-vue.${format}.js`,
     },
     rollupOptions: {
@@ -27,5 +27,10 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
-  plugins: [vue(), dts({ insertTypesEntry: true })],
+  plugins: [
+    vue(),
+    dts({
+      insertTypesEntry: true,
+    }),
+  ],
 });

@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import VInputFile from './components/VInputFile/VInputFile.vue';
+import { VInputFile } from '@/components';
 
 export default defineComponent({
   name: 'App',

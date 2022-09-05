@@ -13,15 +13,13 @@
 <style lang="scss" src="./Modal.scss" />
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
-import Step from './steps/Steps/Steps.vue';
-import PreviewStep from './steps/Preview/Preview.vue';
-import FilenameStep from './steps/Filename/Filename.vue';
+import { Steps, Preview, Filename } from './steps';
 import { IDocument } from '@/models/document.model';
 import Icon from '@/widgets/Icon/Icon.vue';
 
 export default defineComponent({
   components: {
-    Step,
+    Step: Steps,
     Icon,
   },
   props: {
@@ -66,8 +64,8 @@ export default defineComponent({
       openFilename,
       openDocumentRef,
       close,
-      PreviewStep,
-      FilenameStep,
+      PreviewStep: Preview,
+      FilenameStep: Filename,
     };
   },
 });
