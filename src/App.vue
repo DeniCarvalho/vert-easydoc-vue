@@ -68,6 +68,6 @@ export default defineComponent({
 html,
 body {
   font-family: 'Open Sans', sans-serif !important;
-  overflow: hidden !important;
+  overflow: auto;
 }
 </style>

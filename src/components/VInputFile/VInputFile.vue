@@ -57,7 +57,7 @@
       accept=".doc,.docx,application/pdf"
     />
     <div
-      class="ved-w-auto ved-h-auto ved-relative ved-flex ved-justify-between ved-items-center ved-p-2 ved-rounded-lg ved-bg-primaryPureLight ved-mt-1 ved-border-0 ved-border-l-4 ved-border-primaryPure"
+      class="ved-w-auto ved-h-auto ved-relative ved-flex ved-justify-between ved-items-center ved-p-2 ved-rounded-lg ved-bg-primaryPureLight ved-mt-1 ved-border-0 ved-border-l-4 ved-border-solid ved-border-primaryPure"
     >
       <div class="ved-w-auto ved-flex ved-items-center">
         <Icon :icon="CheckCircle" class="ved-text-success ved-h-6" />

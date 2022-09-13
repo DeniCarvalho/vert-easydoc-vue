@@ -2,7 +2,7 @@
   <div>
     <Step
       ref="documentRef"
-      :file="document"
+      :file="file"
       :step="PreviewStep"
       @next="openFilename"
       :fullscreen="true"
@@ -13,7 +13,7 @@
     />
     <Step
       ref="filenameRef"
-      :file="document"
+      :file="file"
       :step="FilenameStep"
       :maxSizeLabel="maxSizeLabel"
       :maxSizeSettings="maxSizeSettings"
@@ -27,12 +27,13 @@
       :maxSizeSettings="maxSizeSettings"
       :supportedTypesLabel="supportedTypesLabel"
       :supportedTypesSettings="supportedTypesSettings"
+      @onClose="close"
     />
   </div>
 </template>
 <style lang="scss" src="./Modal.scss" />
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent, onMounted, ref, watch } from 'vue';
 import { Steps, Preview, Filename, Info } from './steps';
 import { IDocument } from '@/models/document.model';
 import Icon from '@/widgets/Icon/Icon.vue';
@@ -64,45 +65,65 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const document = ref<IDocument>(props.file as IDocument);
+    const file = ref<IDocument>(props.file as IDocument);
     const documentRef = ref<any>(null);
 
     const filenameRef = ref<any>(null);
     const infoRef = ref<any>(null);
+    const modalIsOpen = ref(false);
 
     watch(
       () => props.file,
       (value) => {
         if (value) {
-          document.value = value as IDocument;
+          file.value = value as IDocument;
         }
       }
     );
 
     const openFilename = () => {
       filenameRef.value?.open();
+      modalIsOpen.value = true;
     };
 
     const openDocumentRef = () => {
       documentRef.value?.open();
+      modalIsOpen.value = true;
     };
 
     const openInfo = () => {
       infoRef.value?.open();
+      modalIsOpen.value = true;
+      // const _window: any = window;
+      // _window.body.style.overflowY = 'hidden';
     };
 
     const close = () => {
-      setTimeout(() => {
-        filenameRef.value?.close();
-        emit('onClose');
-      }, 1000);
+      modalIsOpen.value = false;
+
+      filenameRef.value?.close();
+      emit('onClose');
     };
+    onMounted(function () {
+      watch(
+        () => modalIsOpen.value,
+        function (value) {
+          if (value) {
+            document?.querySelector('html')?.classList.add('modal-open-ved');
+            document?.querySelector('body')?.classList.add('modal-open-ved');
+          } else {
+            document?.querySelector('html')?.classList.remove('modal-open-ved');
+            document?.querySelector('body')?.classList.remove('modal-open-ved');
+          }
+        }
+      );
+    });
 
     return {
       documentRef,
       filenameRef,
       infoRef,
-      document,
+      file,
       openFilename,
       openDocumentRef,
       openInfo,
