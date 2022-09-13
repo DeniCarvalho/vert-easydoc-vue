@@ -39,16 +39,26 @@
     <div
       id="info-icon-ved"
       class="ved-absolute ved-top-2 ved-right-2 ved-cursor-pointer"
+      v-on:click.prevent="$emit('openInfo')"
     >
-      <div class="icon-ved ved-absolute ved-z-50 ved-text-xs">&#8505;</div>
-      <div class="blob-ved color-ved ved-relative ved-z-40"></div>
+      <Icon
+        :icon="Information"
+        class="ved-text-primaryPure icon-ved ved-p-0 ved-m-0 ved-z-50 ved-absolute"
+        :size="18"
+      />
+      <div class="blob-ved ved-relative ved-z-40"></div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { Icon } from '@/widgets';
+import Information from 'vue-material-design-icons/Information.vue';
 import animationData from '@/assets/animation/upload-file.json';
 export default defineComponent({
+  components: {
+    Icon,
+  },
   props: {
     browserLink: {
       type: String,
@@ -99,6 +109,7 @@ export default defineComponent({
       start,
       complete,
       reverse,
+      Information,
     };
   },
 });

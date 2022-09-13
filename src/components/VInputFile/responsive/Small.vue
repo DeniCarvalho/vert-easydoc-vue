@@ -18,7 +18,7 @@
     />
 
     <div
-      class="ved-flex ved-w-full ved-justify-between ved-items-center ved-pl-1"
+      class="ved-flex ved-w-full ved-justify-between ved-items-center ved-pl-1 ved-relative"
     >
       <div class="ved-text-primary ved-text-center ved-text-xs">
         <span class="ved-cursor-pointer ved-font-bold ved-text-primaryPure">
@@ -27,17 +27,33 @@
         {{ dragDrop }}
       </div>
 
-      <div id="info-icon-ved" class="ved-cursor-pointer ved-pr-1">
-        <div class="icon-ved ved-absolute ved-z-50 ved-text-xs">&#8505;</div>
-        <div class="blob-ved color-ved ved-relative ved-z-40"></div>
+      <div class="ved-w-auto ved-h-auto ved-relative">
+        <div
+          id="info-icon-ved"
+          class="ved-cursor-pointer ved-mr-2 ved-h-auto ved-relative"
+          v-on:click.prevent="$emit('openInfo')"
+        >
+          <Icon
+            :icon="Information"
+            class="ved-text-primaryPure icon-ved ved-p-0 ved-m-0 ved-z-50 ved-absolute"
+            :size="18"
+          />
+          <div class="blob-ved ved-relative ved-z-40"></div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { Icon } from '@/widgets';
 import animationData from '@/assets/animation/upload-file.json';
+import Information from 'vue-material-design-icons/Information.vue';
+
 export default defineComponent({
+  components: {
+    Icon,
+  },
   props: {
     browserLink: {
       type: String,
@@ -88,6 +104,7 @@ export default defineComponent({
       start,
       complete,
       reverse,
+      Information,
     };
   },
 });

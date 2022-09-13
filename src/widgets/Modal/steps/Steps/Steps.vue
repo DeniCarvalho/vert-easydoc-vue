@@ -7,6 +7,18 @@
   >
     <div class="modal-background-ved">
       <div class="modal-ved" :class="{ 'ved-h-full ved-w-full': fullscreen }">
+        <div v-if="!fullscreen" class="ved-h-auto ved-mb-5">
+          <div
+            class="ved-group ved-scale-90 hover:ved-scale-100 ved-w-10 ved-h-10 ved-bg-white ved-cursor-pointer ved-shadow-xl ved-rounded-full ved-border-primaryPure ved-mx-auto ved-flex ved-items-center ved-justify-center ved-duration-300"
+            @click="close"
+          >
+            <Icon
+              :icon="Close"
+              class="ved-text-red-500 ved-m-0 ved-p-0 ved-h-5 ved-scale-75 group-hover:ved-scale-100 ved-duration-300"
+              :size="20"
+            />
+          </div>
+        </div>
         <div
           class="ved-bg-white"
           :class="{
@@ -19,28 +31,14 @@
             class="ved-flex ved-items-center ved-justify-between"
             v-if="!fullscreen"
           >
-            <h3 class="ved-text-2xl">{{ document?.name }}</h3>
-            <svg
-              @click="close"
-              xmlns="http://www.w3.org/2000/svg"
-              class="ved-w-8 ved-h-8 ved-text-red-900 ved-cursor-pointer"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            <h3 class="ved-text-2xl" v-if="document?.name">
+              {{ document?.name }}
+            </h3>
           </div>
           <div
             class=""
             :class="{
               'ved-w-full ved-h-full': fullscreen,
-              'ved-mt-4': !fullscreen,
             }"
           >
             <component
@@ -48,6 +46,10 @@
               @next="next"
               @close="close"
               :file="document"
+              :maxSizeLabel="maxSizeLabel"
+              :maxSizeSettings="maxSizeSettings"
+              :supportedTypesLabel="supportedTypesLabel"
+              :supportedTypesSettings="supportedTypesSettings"
             ></component>
           </div>
         </div>
@@ -59,6 +61,7 @@
 <script lang="ts">
 import { IDocument } from '@/models/document.model';
 import { defineComponent, nextTick, ref } from 'vue';
+import Close from 'vue-material-design-icons/Close.vue';
 import Icon from '@/widgets/Icon/Icon.vue';
 export default defineComponent({
   components: { Icon },
@@ -68,6 +71,22 @@ export default defineComponent({
     },
     step: { required: true },
     fullscreen: { default: false },
+    supportedTypesLabel: {
+      type: String,
+      required: true,
+    },
+    supportedTypesSettings: {
+      type: String,
+      required: true,
+    },
+    maxSizeLabel: {
+      type: String,
+      required: true,
+    },
+    maxSizeSettings: {
+      type: String,
+      required: true,
+    },
   },
   setup(props, { emit }) {
     const document = ref<IDocument>();
@@ -105,7 +124,7 @@ export default defineComponent({
         }, 400);
       });
     };
-    return { isOpen, outAnimate, document, open, close, next };
+    return { isOpen, outAnimate, document, open, close, next, Close };
   },
 });
 </script>

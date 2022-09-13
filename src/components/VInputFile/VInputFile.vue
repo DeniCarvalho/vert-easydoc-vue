@@ -21,6 +21,7 @@
         :supportedTypesSettings="configComponent.settings.supportedTypes"
         @hover="isHover = true"
         @leave="isHover = false"
+        @openInfo="openInfo"
       />
       <Medium
         v-else-if="size === 'medium'"
@@ -32,6 +33,7 @@
         :supportedTypesSettings="configComponent.settings.supportedTypes"
         @hover="isHover = true"
         @leave="isHover = false"
+        @openInfo="openInfo"
       />
       <Small
         v-else
@@ -43,6 +45,7 @@
         :supportedTypesSettings="configComponent.settings.supportedTypes"
         @hover="isHover = true"
         @leave="isHover = false"
+        @openInfo="openInfo"
       />
     </label>
     <input
@@ -71,7 +74,14 @@
         <Icon :icon="TrashCan" :size="18" class="ved-text-primaryPure" />
       </div>
     </div>
-    <Modal ref="modalRef" :file="document" />
+    <Modal
+      ref="modalRef"
+      :file="document"
+      :maxSizeLabel="configComponent.labels.maxSize"
+      :maxSizeSettings="configComponent.settings.maxSize"
+      :supportedTypesLabel="configComponent.labels.supportedTypes"
+      :supportedTypesSettings="configComponent.settings.supportedTypes"
+    />
   </div>
 </template>
 <style lang="scss" src="./VInputFile.scss" />
@@ -232,6 +242,10 @@ export default defineComponent({
       onFile(file);
     };
 
+    const openInfo = () => {
+      modalRef.value?.openInfo();
+    };
+
     const preventDefaults = (e: any) => {
       e.preventDefault();
     };
@@ -255,7 +269,6 @@ export default defineComponent({
     return {
       configComponent,
       inputFileVed,
-
       fileRef,
       modalRef,
       isHover,
@@ -263,6 +276,7 @@ export default defineComponent({
       onFileChange,
       onDrop,
       close,
+      openInfo,
       CheckCircle,
       TrashCan,
       Download,

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="ved-container ved-mx-auto ved-w-2/3 ved-flex ved-flex-col ved-overflow-auto ved-pb-16"
+    class="ved-container sm:ved-mx-auto ved-w-auto sm:ved-w-2/3 ved-px-5 sm:ved-px-0 ved-flex ved-flex-col ved-overflow-auto ved-pb-16"
   >
     <h1 class="ved-text-center">Vert Easydoc</h1>
 
@@ -68,6 +68,6 @@ export default defineComponent({
 html,
 body {
   font-family: 'Open Sans', sans-serif !important;
-  // overflow: hidden !important;
+  overflow: hidden !important;
 }
 </style>
