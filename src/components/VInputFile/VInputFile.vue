@@ -1,52 +1,49 @@
 <template>
   <div id="input-file-ved" ref="inputFileVed" class="ved-w-full ved-relative">
     <label
-      @mouseenter="start"
-      @mouseleave="reverse"
-      @dragover.prevent="start"
-      @dragleave.prevent="reverse"
       @drop.prevent="onDrop"
       for="select-file"
       :class="{
         'hover:ved-border-primaryPure hover:ved-bg-primaryPureLight': isHover,
+        'ved-p-5': size === 'large',
+        'ved-p-3': size === 'medium',
+        'ved-p-1': size === 'small',
       }"
-      class="ved-w-auto ved-h-auto ved-relative ved-group ved-py-5 ved-flex ved-flex-col ved-justify-center ved-cursor-pointer ved-items-center ved-border-2 ved-rounded-lg ved-border-disabledPure ved-border-dashed ved-duration-1000"
+      class="ved-w-auto ved-h-auto ved-relative ved-group ved-p-5 ved-cursor-pointer ved-flex ved-flex-col ved-justify-center ved-items-center ved-border-2 ved-rounded-lg ved-border-disabledPure ved-border-dashed ved-duration-1000"
     >
-      <lottie-animation
-        id="anim-ref-ved"
-        ref="animRef"
-        :loop="false"
-        :autoPlay="false"
-        :speed="1"
-        :animationData="animationData"
-        @complete="complete"
-        class="ved-h-28"
+      <Large
+        v-if="size === 'large'"
+        :browserLink="configComponent.labels.browserLink"
+        :dragDrop="configComponent.labels.dragDrop"
+        :maxSizeLabel="configComponent.labels.maxSize"
+        :maxSizeSettings="configComponent.settings.maxSize"
+        :supportedTypesLabel="configComponent.labels.supportedTypes"
+        :supportedTypesSettings="configComponent.settings.supportedTypes"
+        @hover="isHover = true"
+        @leave="isHover = false"
       />
-
-      <div
-        class="ved-text-primary ved-text-center ved-text-sm sm:ved-text-base"
-      >
-        <span class="ved-cursor-pointer ved-font-bold ved-text-primaryPure">
-          {{ configComponent.labels.browserLink }}
-        </span>
-        {{ configComponent.labels.dragDrop }}
-      </div>
-      <div class="ved-text-fontLight ved-text-xs ved-mt-1 ved-text-center">
-        {{ configComponent.labels.supportedTypes }}:
-        {{ configComponent.settings.supportedTypes }}
-      </div>
-      <div class="ved-text-fontLight ved-text-xs ved-text-center">
-        {{ configComponent.labels.maxSize }}:
-        {{ configComponent.settings.maxSize }}
-      </div>
-
-      <div
-        id="info-icon-ved"
-        class="ved-absolute ved-top-2 ved-right-2 ved-cursor-pointer"
-      >
-        <div class="icon-ved ved-absolute ved-z-50 ved-text-xs">&#8505;</div>
-        <div class="blob-ved color-ved ved-relative ved-z-40"></div>
-      </div>
+      <Medium
+        v-else-if="size === 'medium'"
+        :browserLink="configComponent.labels.browserLink"
+        :dragDrop="configComponent.labels.dragDrop"
+        :maxSizeLabel="configComponent.labels.maxSize"
+        :maxSizeSettings="configComponent.settings.maxSize"
+        :supportedTypesLabel="configComponent.labels.supportedTypes"
+        :supportedTypesSettings="configComponent.settings.supportedTypes"
+        @hover="isHover = true"
+        @leave="isHover = false"
+      />
+      <Small
+        v-else
+        :browserLink="configComponent.labels.browserLink"
+        :dragDrop="configComponent.labels.dragDrop"
+        :maxSizeLabel="configComponent.labels.maxSize"
+        :maxSizeSettings="configComponent.settings.maxSize"
+        :supportedTypesLabel="configComponent.labels.supportedTypes"
+        :supportedTypesSettings="configComponent.settings.supportedTypes"
+        @hover="isHover = true"
+        @leave="isHover = false"
+      />
     </label>
     <input
       ref="fileRef"
@@ -91,14 +88,14 @@ import CheckCircle from 'vue-material-design-icons/CheckCircle.vue';
 import TrashCan from 'vue-material-design-icons/TrashCan.vue';
 import Download from 'vue-material-design-icons/Download.vue';
 import { Modal, Icon } from '../../widgets';
-import animationData from '@/assets/animation/upload-file.json';
+import { Small, Medium, Large } from './responsive';
 import { IPage, PageModel } from '@/models/page.model';
 import { DocumentModel, IDocument } from '@/models/document.model';
 import { SizeEnum } from '@/enums/size.enum';
 
 export default defineComponent({
   name: 'VSInput',
-  components: { Icon, Modal },
+  components: { Small, Medium, Large, Icon, Modal },
   props: {
     fileName: {
       type: String,
@@ -177,28 +174,13 @@ export default defineComponent({
     );
 
     const inputFileVed = ref<HTMLDivElement | null>(null);
-    const animRef = ref<any>(null);
+
     const fileRef = ref<any>(null);
     const modalRef = ref<any>(null);
     const isHover = ref(false);
 
     const documentFile = ref<File>();
     const document = ref<IDocument>();
-
-    const start = () => {
-      isHover.value = true;
-      animRef.value?.setDirection(1);
-      animRef.value?.play();
-    };
-    const complete = () => {
-      animRef.value?.pause();
-    };
-
-    const reverse = () => {
-      isHover.value = false;
-      animRef.value?.setDirection(-1);
-      animRef.value?.play();
-    };
 
     const close = () => {
       modalRef.value?.close();
@@ -273,15 +255,11 @@ export default defineComponent({
     return {
       configComponent,
       inputFileVed,
-      animRef,
+
       fileRef,
       modalRef,
       isHover,
       document,
-      animationData,
-      start,
-      complete,
-      reverse,
       onFileChange,
       onDrop,
       close,

@@ -1,3 +1,9 @@
 @import 'tailwindcss/base'; // @tailwind base;
 @import 'tailwindcss/components'; // @tailwind components;
 @import 'tailwindcss/utilities'; // @tailwind utilities;
+
+html,
+body {
+  font-family: 'Open Sans', sans-serif !important;
+  overflow: auto !important;
+}

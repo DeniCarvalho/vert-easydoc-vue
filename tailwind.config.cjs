@@ -16,11 +16,14 @@ module.exports = {
         fontLight: '#a1a1a4',
         disabledPure: '#e9e9e9',
       },
+      height: {
+        18: '4.6rem',
+      },
       fontSize: {
-        'ved-xxs': '.55rem',
-        'ved-xs-auto': ['3.0vmax', '2rem'],
-        'ved-xl-auto': ['1.0vmax', '2rem'],
-        'ved-2xl-auto': ['2.0vmax', '2rem'],
+        xxs: '.60rem',
+        'xs-auto': ['3.0vmax', '2rem'],
+        'xl-auto': ['1.0vmax', '2rem'],
+        '2xl-auto': ['2.0vmax', '2rem'],
       },
       keyframes: () => ({
         vedFadeIn: {
