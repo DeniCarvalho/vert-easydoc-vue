@@ -1,6 +1,7 @@
 <template>
   <div id="input-file-ved" ref="inputFileVed" class="ved-w-full ved-relative">
     <label
+      v-if="!fileLink"
       @drop.prevent="onDrop"
       for="select-file"
       ref="labelFileRef"
@@ -49,6 +50,7 @@
       />
     </label>
     <input
+      v-if="!fileLink"
       ref="fileRef"
       hidden
       id="select-file"
@@ -57,6 +59,7 @@
       accept=".doc,.docx,application/pdf"
     />
     <div
+      v-if="fileLink"
       class="ved-w-auto ved-h-auto ved-relative ved-flex ved-justify-between ved-items-center ved-p-2 ved-rounded-lg ved-bg-primaryPureLight ved-mt-1 ved-border-0 ved-border-l-4 ved-border-solid ved-border-primaryPure"
     >
       <div class="ved-w-auto ved-flex ved-items-center">
@@ -109,6 +112,10 @@ export default defineComponent({
   name: 'VSInput',
   components: { Small, Medium, Large, Icon, Modal },
   props: {
+    fileLink: {
+      type: String,
+      required: false,
+    },
     fileName: {
       type: String,
       default: 'Document template',
@@ -122,18 +129,18 @@ export default defineComponent({
       },
       required: false,
     },
-    colors: {
-      type: Object as () => {
-        primary?: string;
-      },
-      required: false,
-    },
     labels: {
       type: Object as () => {
         browserLink?: string;
         dragDrop?: string;
         supportedTypes?: string;
         maxSize?: string;
+      },
+      required: false,
+    },
+    colors: {
+      type: Object as () => {
+        primary?: string;
       },
       required: false,
     },
