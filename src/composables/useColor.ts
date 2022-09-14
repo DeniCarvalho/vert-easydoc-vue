@@ -9,12 +9,18 @@ export function useColor() {
     `^(rgb)a?\\(\\s*(${VALUE.source}|${CUSTOM_PROPERTY.source})(?:${SEP.source}(${VALUE.source}|${CUSTOM_PROPERTY.source}))?(?:${SEP.source}(${VALUE.source}|${CUSTOM_PROPERTY.source}))?(?:${ALPHA_SEP.source}(${VALUE.source}|${CUSTOM_PROPERTY.source}))?\\s*\\)$`
   );
 
-  function formatColor({ mode, color, alpha }: any) {
+  function formatColor({ mode, color, alpha, css }: any) {
     let hasAlpha = alpha !== undefined;
-    return `${mode}(${color.join(' ')}${hasAlpha ? ` / ${alpha}` : ''})`;
+    return !css
+      ? `${mode}(${color.join(' ')}${hasAlpha ? ` / ${alpha}` : ''})`
+      : `${mode}(${color.join(',')}${hasAlpha ? `,${alpha}` : ''})`;
   }
 
-  function parseColor(value: any, { loose = false } = {}, alpha?: number) {
+  function parseColor(
+    value: any,
+    { loose = false, css = false } = {},
+    alpha?: number
+  ) {
     if (!value) return null;
 
     let HSL = new RegExp(
@@ -31,6 +37,7 @@ export function useColor() {
         mode: 'rgb',
         color: ['0', '0', '0'],
         alpha: alpha || '0',
+        css,
       });
     }
 
@@ -48,6 +55,7 @@ export function useColor() {
           parseInt(hex[3], 16),
         ].map((v) => v.toString()),
         alpha: alpha || (hex[4] ? (parseInt(hex[4], 16) / 255).toString() : 1),
+        css,
       });
     }
     var ref2;
@@ -77,6 +85,7 @@ export function useColor() {
           : (ref1 = ref.toString) === null || ref1 === void 0
           ? void 0
           : ref1.call(ref)),
+      css,
     });
   }
 

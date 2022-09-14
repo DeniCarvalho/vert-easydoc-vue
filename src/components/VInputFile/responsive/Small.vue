@@ -16,7 +16,6 @@
       @complete="complete"
       class="ved-h-8"
     />
-
     <div
       class="ved-flex ved-w-full ved-justify-between ved-items-center ved-pl-1 ved-relative"
     >
@@ -45,10 +44,12 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import { Icon } from '@/widgets';
 import animationData from '@/assets/animation/upload-file.json';
 import Information from 'vue-material-design-icons/Information.vue';
+import { reverse } from 'dns';
+import { start } from 'repl';
 
 export default defineComponent({
   components: {

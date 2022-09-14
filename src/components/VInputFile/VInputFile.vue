@@ -1,7 +1,7 @@
 <template>
   <div id="input-file-ved" ref="inputFileVed" class="ved-w-full ved-relative">
     <label
-      v-if="!fileLink"
+      v-if="!fileLink && uploadProgress === undefined"
       @drop.prevent="onDrop"
       for="select-file"
       ref="labelFileRef"
@@ -77,6 +77,76 @@
         <Icon :icon="TrashCan" :size="18" class="ved-text-primaryPure" />
       </div>
     </div>
+
+    <div
+      class="ved-w-full ved-relative"
+      :class="{
+        'ved-block': !fileLink && uploadProgress !== undefined,
+        'ved-hidden': fileLink || uploadProgress === undefined,
+      }"
+    >
+      <div class="ved-flex ved-mb-2 ved-items-center ved-justify-between">
+        <div
+          ref="bgLabelProgressRef"
+          class="ved-flex ved-items-center ved-py-1 ved-px-2 ved-uppercase ved-rounded-lg ved-text-primaryPure"
+        >
+          <svg
+            v-if="uploadProgress == 100"
+            aria-hidden="true"
+            class="ved-w-4 ved-h-4 ved-mr-1.5 ved-text-gray-200 ved-animate-spin-fast-custom-ved dark:ved-text-gray-600 ved-fill-primaryPure"
+            viewBox="0 0 100 101"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+              fill="currentColor"
+            />
+            <path
+              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+              fill="currentFill"
+            />
+          </svg>
+          <div v-else class="ved-mr-1.5 ved-h-auto">
+            <Icon
+              :icon="Upload"
+              class="ved-text-primaryPure ved-h-3 ved-animate-bounce-custom-ved"
+              :size="14"
+            />
+          </div>
+          <span class="ved-text-xs ved-font-semibold ved-inline-block">
+            {{
+              uploadProgress != 100 ? 'Fazendo upload' : 'Preparando arquivo'
+            }}
+          </span>
+        </div>
+        <div class="ved-text-right ved-flex ved-items-center">
+          <Icon
+            :size="14"
+            :icon="CheckCircle"
+            class="ved-text-primaryPure ved-mr-1 ved-mt-1"
+            v-if="uploadProgress == 100"
+          />
+          <span
+            class="ved-text-xs ved-font-semibold ved-inline-block ved-text-primaryPure"
+          >
+            {{ percentageUpload }}
+          </span>
+        </div>
+      </div>
+      <div
+        ref="bgProgressRef"
+        class="ved-overflow-hidden ved-h-2 ved-text-xs ved-flex ved-rounded-[3px]"
+      >
+        <div
+          :style="{
+            width: percentageUpload,
+          }"
+          class="ved-shadow-none ved-flex ved-flex-col ved-text-center ved-whitespace-nowrap ved-text-white ved-justify-center ved-bg-primaryPure ved-duration-[1700ms]"
+        ></div>
+      </div>
+    </div>
+
     <Modal
       ref="modalRef"
       :file="file"
@@ -100,13 +170,14 @@ import {
 import CheckCircle from 'vue-material-design-icons/CheckCircle.vue';
 import TrashCan from 'vue-material-design-icons/TrashCan.vue';
 import Download from 'vue-material-design-icons/Download.vue';
+import Upload from 'vue-material-design-icons/Upload.vue';
 import { Modal, Icon } from '../../widgets';
 import { Small, Medium, Large } from './responsive';
 import { IPage, PageModel } from '@/models/page.model';
 import { DocumentModel, IDocument } from '@/models/document.model';
 import { SizeEnum } from '@/enums/size.enum';
-import { IColor, IRGB } from '@/models/color.model';
 import { useColor } from '@/composables/useColor';
+import { computed } from '@vue/reactivity';
 
 export default defineComponent({
   name: 'VSInput',
@@ -151,6 +222,9 @@ export default defineComponent({
   },
   setup(props) {
     const { parseColor, formatColor } = useColor();
+    const root = ref<any>(null);
+    const styleRoot = ref<any>(null);
+
     const configComponent = ref<any>({
       settings: {
         ...{
@@ -189,9 +263,19 @@ export default defineComponent({
 
     const documentFile = ref<File>();
     const file = ref<IDocument>();
+    const uploadProgress = ref<number>();
+    const bgLabelProgressRef = ref<any>(null);
+    const bgProgressRef = ref<any>(null);
 
     const close = () => {
       modalRef.value?.close();
+    };
+
+    const fakeProgress = () => {
+      uploadProgress.value = 10;
+      setTimeout(() => {
+        uploadProgress.value = 100;
+      }, 1000);
     };
 
     const onFile = async (_file: File) => {
@@ -207,24 +291,50 @@ export default defineComponent({
         const formData = new FormData();
         formData.append('file', documentFile.value);
 
-        const response = await fetch('http://localhost:5005/go', {
-          method: 'POST',
-          body: formData,
-        });
-        const data = await response.json();
+        const req = new XMLHttpRequest();
 
-        const pages: IPage[] = data.pages.map((page: any) =>
-          PageModel.fromJson(page)
-        );
-        file.value = new DocumentModel({
-          name: name ?? '',
-          extension: extension ?? '',
-          pages,
-          file: documentFile.value,
+        req.upload.onprogress = (e) => {
+          uploadProgress.value = 0;
+          if (e.lengthComputable) {
+            uploadProgress.value = (e.loaded / e.total) * 100;
+          }
+        };
+
+        req.addEventListener('load', function () {
+          if (req.status == 200) {
+            const data = JSON.parse(req.response);
+            if (documentFile.value) {
+              const pages: IPage[] = data.pages.map((page: any) =>
+                PageModel.fromJson(page)
+              );
+              file.value = new DocumentModel({
+                name: name ?? '',
+                extension: extension ?? '',
+                pages,
+                file: documentFile.value,
+              });
+
+              fileRef.value.value = '';
+              // modalRef.value?.openDocumentRef();
+            }
+          } else {
+            if (req.response) {
+              const data = JSON.parse(req.response);
+              throw new Error(data?.message || 'Error');
+            } else throw new Error('Error');
+          }
         });
 
-        fileRef.value.value = '';
-        modalRef.value?.openDocumentRef();
+        req.upload.onerror = () => {
+          console.error('Upload failed.');
+        };
+
+        req.upload.onabort = () => {
+          console.error('Upload cancelled.');
+        };
+
+        req.open('POST', configComponent.value.settings.endpoint);
+        req.send(formData);
       } catch (error) {
         console.log(error);
       }
@@ -248,6 +358,12 @@ export default defineComponent({
       e.preventDefault();
     };
 
+    const percentageUpload = computed(() => {
+      return uploadProgress.value != undefined
+        ? Math.round(uploadProgress.value) + '%'
+        : '';
+    });
+
     const events = ['dragenter', 'dragover', 'dragleave', 'drop'];
     onMounted(function () {
       events.forEach((eventName) => {
@@ -255,17 +371,17 @@ export default defineComponent({
       });
       fileRef.value.onchange = onFileChange;
 
-      const root: any = document.querySelector(':root');
-      const styleRoot = getComputedStyle(document.body);
+      root.value = document.querySelector(':root');
+      styleRoot.value = getComputedStyle(document.body);
 
       if (
         configComponent.value.colors?.primary ||
-        !styleRoot.getPropertyValue('--primary-pure-color-custom-ved')
+        !styleRoot.value.getPropertyValue('--primary-pure-color-custom-ved')
       ) {
-        root.style.setProperty(
+        root.value.style.setProperty(
           '--primary-pure-color-custom-ved',
           configComponent.value.colors?.primary ||
-            styleRoot.getPropertyValue('--primary-color-default-ved')
+            styleRoot.value.getPropertyValue('--primary-color-default-ved')
         );
       }
 
@@ -275,13 +391,13 @@ export default defineComponent({
           if (value) {
             labelFileRef.value.style.backgroundColor = parseColor(
               configComponent.value.colors?.primary ||
-                styleRoot.getPropertyValue('--primary-color-default-ved'),
+                styleRoot.value.getPropertyValue('--primary-color-default-ved'),
               { loose: false },
               0.06
             );
             labelFileRef.value.style.borderColor = parseColor(
               configComponent.value.colors?.primary ||
-                styleRoot.getPropertyValue('--primary-color-default-ved'),
+                styleRoot.value.getPropertyValue('--primary-color-default-ved'),
               { loose: false },
               1
             );
@@ -292,12 +408,25 @@ export default defineComponent({
               alpha: 0,
             });
             labelFileRef.value.style.borderColor = parseColor(
-              styleRoot.getPropertyValue('--default-color-ved'),
+              styleRoot.value.getPropertyValue('--default-color-ved'),
               { loose: false },
               1
             );
           }
         }
+      );
+
+      bgLabelProgressRef.value.style.backgroundColor = parseColor(
+        configComponent.value.colors?.primary ||
+          styleRoot.value.getPropertyValue('--primary-color-default-ved'),
+        { loose: false },
+        0.1
+      );
+      bgProgressRef.value.style.backgroundColor = parseColor(
+        configComponent.value.colors?.primary ||
+          styleRoot.value.getPropertyValue('--primary-color-default-ved'),
+        { loose: false },
+        0.1
       );
     });
 
@@ -316,6 +445,10 @@ export default defineComponent({
       modalRef,
       isHover,
       file,
+      uploadProgress,
+      percentageUpload,
+      bgLabelProgressRef,
+      bgProgressRef,
       onFileChange,
       onDrop,
       close,
@@ -323,6 +456,7 @@ export default defineComponent({
       CheckCircle,
       TrashCan,
       Download,
+      Upload,
     };
   },
 });

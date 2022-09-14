@@ -2,7 +2,7 @@
   <div
     class="ved-container sm:ved-mx-auto ved-w-auto sm:ved-w-2/3 ved-px-5 sm:ved-px-0 ved-flex ved-flex-col ved-overflow-auto ved-pb-16"
   >
-    <h1 class="ved-text-center">Vert Easydoc</h1>
+    <h1 class="ved-text-center">Vert Sign</h1>
 
     <div class="ved-w-full ved-my-4">
       <h4 class="ved-text-primaryPure ved-p-0 ved-pb-2 ved-m-0">Small</h4>
@@ -45,7 +45,7 @@ export default defineComponent({
   setup() {
     const config = reactive({
       colors: {
-        // primary: 'rgb(22 114 181)',
+        primary: 'rgb(22 114 181)',
       },
       labels: {
         browserLink: 'Clique',

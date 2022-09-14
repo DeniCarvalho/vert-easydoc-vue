@@ -25,17 +25,29 @@ module.exports = {
         'xl-auto': ['1.0vmax', '2rem'],
         '2xl-auto': ['2.0vmax', '2rem'],
       },
+      animation: {
+        'spin-fast-custom-ved': 'vedSpin .6s linear infinite',
+        'fade-in-custom-ved': 'vedFadeIn .2s ease-in-out',
+        'bounce-custom-ved': 'vedBounce 1.5s ease infinite',
+      },
       keyframes: () => ({
+        vedSpin: {
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(360deg)' },
+        },
         vedFadeIn: {
           '0%': { opacity: 0 },
           '100%': { opacity: 1 },
         },
-        bounce: {
+        vedBounce: {
           '0%': {
-            transform: 'scale(0)',
+            transform: 'translateY(0)',
+          },
+          '50%': {
+            transform: 'translateY(-5px)',
           },
           '100%': {
-            transform: 'scale(1)',
+            transform: 'translateY(0)',
           },
         },
       }),

@@ -2,7 +2,7 @@
   <div class="ved-w-full">
     <p class="ved-text-left ved-text-sm ved-text-black ved-p-0 ved-m-0">
       A
-      <i class="ved-text-primaryPure">Easy byline</i> auxilia na criação de uma
+      <i class="ved-text-primaryPure">Vert Sign</i> auxilia na criação de uma
       página de assinaturas personalizada para o seu negócio. <br /><br />
       Faça o upload do documento
       <b class="ved-text-primaryPure">sem a página de assinaturas</b> e defina
