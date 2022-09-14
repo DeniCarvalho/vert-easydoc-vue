@@ -17,7 +17,7 @@
       class="ved-h-18 sm:ved-h-28"
     />
 
-    <div class="ved-text-primary ved-text-center ved-text-xs sm:ved-text-base">
+    <div class="ved-text-black ved-text-center ved-text-xs sm:ved-text-base">
       <span class="ved-cursor-pointer ved-font-bold ved-text-primaryPure">
         {{ browserLink }}
       </span>

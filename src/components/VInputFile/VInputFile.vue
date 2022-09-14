@@ -3,13 +3,13 @@
     <label
       @drop.prevent="onDrop"
       for="select-file"
+      ref="labelFileRef"
       :class="{
-        'hover:ved-border-primaryPure hover:ved-bg-primaryPureLight': isHover,
         'ved-p-5': size === 'large',
         'ved-p-3': size === 'medium',
         'ved-p-1': size === 'small',
       }"
-      class="ved-w-auto ved-h-auto ved-relative ved-group ved-p-5 ved-cursor-pointer ved-flex ved-flex-col ved-justify-center ved-items-center ved-border-2 ved-rounded-lg ved-border-disabledPure ved-border-dashed ved-duration-1000"
+      class="ved-w-auto ved-h-auto ved-relative ved-group ved-p-5 ved-cursor-pointer ved-flex ved-flex-col ved-justify-center ved-items-center ved-border-2 ved-rounded-lg ved-border-dashed ved-border-disabledPure ved-duration-1000"
     >
       <Large
         v-if="size === 'large'"
@@ -60,7 +60,7 @@
       class="ved-w-auto ved-h-auto ved-relative ved-flex ved-justify-between ved-items-center ved-p-2 ved-rounded-lg ved-bg-primaryPureLight ved-mt-1 ved-border-0 ved-border-l-4 ved-border-solid ved-border-primaryPure"
     >
       <div class="ved-w-auto ved-flex ved-items-center">
-        <Icon :icon="CheckCircle" class="ved-text-success ved-h-6" />
+        <Icon :icon="CheckCircle" class="ved-text-primaryPure ved-h-6" />
         <div class="ved-text-primaryPure ved-cursor-pointer ved-ml-2">
           {{ fileName }}
         </div>
@@ -76,7 +76,7 @@
     </div>
     <Modal
       ref="modalRef"
-      :file="document"
+      :file="file"
       :maxSizeLabel="configComponent.labels.maxSize"
       :maxSizeSettings="configComponent.settings.maxSize"
       :supportedTypesLabel="configComponent.labels.supportedTypes"
@@ -102,6 +102,8 @@ import { Small, Medium, Large } from './responsive';
 import { IPage, PageModel } from '@/models/page.model';
 import { DocumentModel, IDocument } from '@/models/document.model';
 import { SizeEnum } from '@/enums/size.enum';
+import { IColor, IRGB } from '@/models/color.model';
+import { useColor } from '@/composables/useColor';
 
 export default defineComponent({
   name: 'VSInput',
@@ -123,7 +125,6 @@ export default defineComponent({
     colors: {
       type: Object as () => {
         primary?: string;
-        secondary?: string;
       },
       required: false,
     },
@@ -142,6 +143,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { parseColor, formatColor } = useColor();
     const configComponent = ref<any>({
       settings: {
         ...{
@@ -171,39 +173,28 @@ export default defineComponent({
       size: props.size,
     });
 
-    watch(
-      () => props,
-      (value) => {
-        if (value) {
-          configComponent.value = {
-            ...configComponent.value,
-            ...value,
-          };
-        }
-      }
-    );
-
     const inputFileVed = ref<HTMLDivElement | null>(null);
 
+    const labelFileRef = ref<any>(null);
     const fileRef = ref<any>(null);
     const modalRef = ref<any>(null);
     const isHover = ref(false);
 
     const documentFile = ref<File>();
-    const document = ref<IDocument>();
+    const file = ref<IDocument>();
 
     const close = () => {
       modalRef.value?.close();
     };
 
-    const onFile = async (file: File) => {
+    const onFile = async (_file: File) => {
       try {
-        const blob = file.slice(0, file.size, file.type);
-        const extension = file.name.split('.').pop();
-        const name = file.name.split('.').shift();
+        const blob = _file.slice(0, _file.size, _file.type);
+        const extension = _file.name.split('.').pop();
+        const name = _file.name.split('.').shift();
 
         documentFile.value = new File([blob], `${name}.${extension}`, {
-          type: file.type,
+          type: _file.type,
         });
         console.log(documentFile.value);
         const formData = new FormData();
@@ -218,7 +209,7 @@ export default defineComponent({
         const pages: IPage[] = data.pages.map((page: any) =>
           PageModel.fromJson(page)
         );
-        document.value = new DocumentModel({
+        file.value = new DocumentModel({
           name: name ?? '',
           extension: extension ?? '',
           pages,
@@ -251,12 +242,56 @@ export default defineComponent({
     };
 
     const events = ['dragenter', 'dragover', 'dragleave', 'drop'];
-    onMounted(() => {
+    onMounted(function () {
       events.forEach((eventName) => {
-        const _document = document as any;
-        _document?.body?.addEventListener(eventName, preventDefaults);
+        document?.body?.addEventListener(eventName, preventDefaults);
       });
       fileRef.value.onchange = onFileChange;
+
+      const root: any = document.querySelector(':root');
+      const styleRoot = getComputedStyle(document.body);
+
+      if (
+        configComponent.value.colors?.primary ||
+        !styleRoot.getPropertyValue('--primary-pure-color-custom-ved')
+      ) {
+        root.style.setProperty(
+          '--primary-pure-color-custom-ved',
+          configComponent.value.colors?.primary ||
+            styleRoot.getPropertyValue('--primary-color-default-ved')
+        );
+      }
+
+      watch(
+        () => isHover.value,
+        function (value) {
+          if (value) {
+            labelFileRef.value.style.backgroundColor = parseColor(
+              configComponent.value.colors?.primary ||
+                styleRoot.getPropertyValue('--primary-color-default-ved'),
+              { loose: false },
+              0.06
+            );
+            labelFileRef.value.style.borderColor = parseColor(
+              configComponent.value.colors?.primary ||
+                styleRoot.getPropertyValue('--primary-color-default-ved'),
+              { loose: false },
+              1
+            );
+          } else {
+            labelFileRef.value.style.backgroundColor = formatColor({
+              mode: 'rgba',
+              color: ['0', '0', '0'],
+              alpha: 0,
+            });
+            labelFileRef.value.style.borderColor = parseColor(
+              styleRoot.getPropertyValue('--default-color-ved'),
+              { loose: false },
+              1
+            );
+          }
+        }
+      );
     });
 
     onUnmounted(() => {
@@ -269,10 +304,11 @@ export default defineComponent({
     return {
       configComponent,
       inputFileVed,
+      labelFileRef,
       fileRef,
       modalRef,
       isHover,
-      document,
+      file,
       onFileChange,
       onDrop,
       close,

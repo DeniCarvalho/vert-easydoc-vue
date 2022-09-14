@@ -4,12 +4,13 @@
       ref="documentRef"
       :file="file"
       :step="PreviewStep"
-      @next="openFilename"
       :fullscreen="true"
       :maxSizeLabel="maxSizeLabel"
       :maxSizeSettings="maxSizeSettings"
       :supportedTypesLabel="supportedTypesLabel"
       :supportedTypesSettings="supportedTypesSettings"
+      @next="openFilename"
+      @onClose="close"
     />
     <Step
       ref="filenameRef"
@@ -33,7 +34,7 @@
 </template>
 <style lang="scss" src="./Modal.scss" />
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from 'vue';
+import { defineComponent, nextTick, onMounted, ref, watch } from 'vue';
 import { Steps, Preview, Filename, Info } from './steps';
 import { IDocument } from '@/models/document.model';
 import Icon from '@/widgets/Icon/Icon.vue';
@@ -94,16 +95,13 @@ export default defineComponent({
     const openInfo = () => {
       infoRef.value?.open();
       modalIsOpen.value = true;
-      // const _window: any = window;
-      // _window.body.style.overflowY = 'hidden';
     };
 
     const close = () => {
       modalIsOpen.value = false;
-
-      filenameRef.value?.close();
       emit('onClose');
     };
+
     onMounted(function () {
       watch(
         () => modalIsOpen.value,

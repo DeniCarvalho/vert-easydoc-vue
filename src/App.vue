@@ -12,6 +12,7 @@
       :size="SizeEnum.Small"
       :labels="config.labels"
       :settings="config.settings"
+      :colors="config.colors"
     />
     <div class="ved-w-full ved-my-4 ved-mt-10">
       <h4 class="ved-text-primaryPure ved-p-0 ved-pb-2 ved-m-0">Medium</h4>
@@ -33,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import { VInputFile } from '@/components';
 import { SizeEnum } from '@/enums/size.enum';
 export default defineComponent({
@@ -42,10 +43,9 @@ export default defineComponent({
     VInputFile,
   },
   setup() {
-    const config = {
+    const config = reactive({
       colors: {
-        primary: '#000',
-        secondary: '#fff',
+        // primary: 'rgb(22 114 181)',
       },
       labels: {
         browserLink: 'Clique',
@@ -57,7 +57,8 @@ export default defineComponent({
         endpoint: 'http://localhost:5005/go',
         // maxSize: '12MB',
       },
-    };
+    });
+
     return { config, SizeEnum };
   },
 });

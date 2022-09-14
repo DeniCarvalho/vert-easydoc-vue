@@ -20,7 +20,7 @@
     <div
       class="ved-flex ved-w-full ved-justify-between ved-items-center ved-pl-1 ved-relative"
     >
-      <div class="ved-text-primary ved-text-center ved-text-xs">
+      <div class="ved-text-black ved-text-center ved-text-xs">
         <span class="ved-cursor-pointer ved-font-bold ved-text-primaryPure">
           {{ browserLink }}
         </span>

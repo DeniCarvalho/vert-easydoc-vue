@@ -154,7 +154,7 @@ export default defineComponent({
 
     const maxLength = ref(40);
     const docName = ref<string>('');
-    docName.value = doc.value.name;
+    docName.value = doc.value?.name || '';
 
     const extensionFile = ref<string>('');
     extensionFile.value = doc.value.extension;

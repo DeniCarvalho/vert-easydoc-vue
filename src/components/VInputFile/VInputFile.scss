@@ -5,8 +5,8 @@
     svg {
       // display: none !important;
       path {
-        fill: #00747a !important;
-        stroke: #00747a !important;
+        fill: var(--primary-pure-color-custom-ved) !important;
+        stroke: var(--primary-pure-color-custom-ved) !important;
       }
     }
   }
@@ -14,7 +14,7 @@
   #info-icon-ved {
     .blob-ved {
       border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
       height: 18px;
       width: 18px;
       transform: scale(0.4);
@@ -24,7 +24,7 @@
     @keyframes ved-pulse-circle {
       0% {
         transform: scale(0.4);
-        box-shadow: 0 0 0 0 #00747ac7;
+        box-shadow: 0 0 0 0 var(--primary-pure-color-custom-ved);
       }
 
       70% {
