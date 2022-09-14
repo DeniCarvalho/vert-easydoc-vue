@@ -13,6 +13,9 @@
       :labels="config.labels"
       :settings="config.settings"
       :colors="config.colors"
+      :fileLink="urlFile"
+      @success="success"
+      @remove="urlFile = ''"
     />
     <div class="ved-w-full ved-my-4 ved-mt-10">
       <h4 class="ved-text-primaryPure ved-p-0 ved-pb-2 ved-m-0">Medium</h4>
@@ -34,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive, ref } from 'vue';
 import { VInputFile } from '@/components';
 import { SizeEnum } from '@/enums/size.enum';
 export default defineComponent({
@@ -45,7 +48,7 @@ export default defineComponent({
   setup() {
     const config = reactive({
       colors: {
-        primary: 'rgb(22 114 181)',
+        // primary: 'rgb(22 114 181)',
       },
       labels: {
         browserLink: 'Clique',
@@ -59,7 +62,13 @@ export default defineComponent({
       },
     });
 
-    return { config, SizeEnum };
+    const urlFile = ref<string>('');
+
+    const success = (data: string) => {
+      urlFile.value = data;
+    };
+
+    return { config, SizeEnum, urlFile, success };
   },
 });
 </script>
