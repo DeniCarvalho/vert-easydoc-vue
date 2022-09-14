@@ -40,11 +40,20 @@
           class="ved-text-primaryPure ved-mr-1 ved-mt-1"
           v-if="uploadProgress == 100"
         />
-        <span
+        <Icon
+          v-else
+          :size="16"
+          :icon="StopCircleOutline"
+          class="ved-text-red-500 ved-cursor-pointer ved-mr-3 ved-h-4"
+          :title="'Cancelar'"
+          @click="$emit('cancel')"
+        />
+
+        <div
           class="ved-text-xs ved-font-semibold ved-inline-block ved-text-primaryPure"
         >
           {{ percentageUpload }}
-        </span>
+        </div>
       </div>
     </div>
     <div
@@ -65,6 +74,8 @@ import { computed, defineComponent, onMounted, ref } from 'vue';
 import { Modal, Icon } from '@/widgets';
 import CheckCircle from 'vue-material-design-icons/CheckCircle.vue';
 import Upload from 'vue-material-design-icons/Upload.vue';
+import StopCircleOutline from 'vue-material-design-icons/StopCircleOutline.vue';
+
 import { useColor } from '@/composables/useColor';
 
 export default defineComponent({
@@ -113,6 +124,7 @@ export default defineComponent({
       bgProgressRef,
       CheckCircle,
       Upload,
+      StopCircleOutline,
     };
   },
 });

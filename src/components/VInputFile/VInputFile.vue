@@ -63,7 +63,7 @@
       v-if="fileLink"
       :link="fileLink"
       :filename="file?.name"
-      @remove="$emit('remove')"
+      @remove="removeFile"
     />
 
     <Uploading
@@ -72,6 +72,7 @@
         'ved-hidden': fileLink || uploadProgress === undefined,
       }"
       :uploadProgress="uploadProgress"
+      @cancel="uploadCancel"
     />
 
     <Modal
@@ -189,6 +190,8 @@ export default defineComponent({
     const file = ref<IDocument>();
     const uploadProgress = ref<number>();
 
+    const request = ref<XMLHttpRequest>(new XMLHttpRequest());
+
     const close = () => {
       modalRef.value?.close();
     };
@@ -206,18 +209,18 @@ export default defineComponent({
         const formData = new FormData();
         formData.append('file', documentFile.value);
 
-        const req = new XMLHttpRequest();
+        request.value = new XMLHttpRequest();
 
-        req.upload.onprogress = (e) => {
+        request.value.upload.onprogress = (e) => {
           uploadProgress.value = 0;
           if (e.lengthComputable) {
             uploadProgress.value = (e.loaded / e.total) * 100;
           }
         };
 
-        req.addEventListener('load', function () {
-          if (req.status == 200) {
-            const data = JSON.parse(req.response);
+        request.value.addEventListener('load', function () {
+          if (request.value.status == 200) {
+            const data = JSON.parse(request.value.response);
             if (documentFile.value) {
               const pages: IPage[] = data.pages.map((page: any) =>
                 PageModel.fromJson(page)
@@ -239,26 +242,32 @@ export default defineComponent({
               // modalRef.value?.openDocumentRef();
             }
           } else {
-            if (req.response) {
-              const data = JSON.parse(req.response);
+            if (request.value.response) {
+              const data = JSON.parse(request.value.response);
               throw new Error(data?.message || 'Error');
             } else throw new Error('Error');
           }
         });
 
-        req.upload.onerror = () => {
-          console.error('Upload failed.');
-        };
-
-        req.upload.onabort = () => {
-          console.error('Upload cancelled.');
-        };
-
-        req.open('POST', configComponent.value.settings.endpoint);
-        req.send(formData);
+        request.value.open('POST', configComponent.value.settings.endpoint);
+        request.value.send(formData);
       } catch (error) {
         console.log(error);
       }
+    };
+
+    const uploadCancel = () => {
+      request.value.abort();
+      uploadProgress.value = undefined;
+      fileRef.value.value = '';
+      documentFile.value = undefined;
+    };
+
+    const removeFile = () => {
+      file.value = undefined;
+      documentFile.value = undefined;
+      fileRef.value.value = '';
+      emit('remove');
     };
 
     const onFileChange = (e: any) => {
@@ -352,6 +361,8 @@ export default defineComponent({
       onDrop,
       close,
       openInfo,
+      uploadCancel,
+      removeFile,
     };
   },
 });
