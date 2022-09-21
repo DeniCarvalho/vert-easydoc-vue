@@ -3,7 +3,7 @@
     <label
       v-if="!fileLink && uploadProgress === undefined"
       @drop.prevent="onDrop"
-      for="select-file"
+      :for="uniqueId"
       ref="labelFileRef"
       :class="{
         'ved-p-5': size === 'large',
@@ -53,9 +53,9 @@
       v-if="!fileLink"
       ref="fileRef"
       hidden
-      id="select-file"
+      :id="uniqueId"
       type="file"
-      name="select-file"
+      :name="uniqueId"
       accept=".doc,.docx,application/pdf"
     />
 
@@ -179,6 +179,7 @@ export default defineComponent({
       size: props.size,
     });
 
+    const uniqueId = ref<string>('');
     const inputFileVed = ref<HTMLDivElement | null>(null);
 
     const labelFileRef = ref<any>(null);
@@ -233,13 +234,13 @@ export default defineComponent({
                 file: documentFile.value,
               });
 
-              emit(
-                'success',
-                'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-              );
+              // emit(
+              //   'success',
+              //   'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+              // );
 
               fileRef.value.value = '';
-              // modalRef.value?.openDocumentRef();
+              modalRef.value?.openDocumentRef();
             }
           } else {
             if (request.value.response) {
@@ -288,8 +289,18 @@ export default defineComponent({
       e.preventDefault();
     };
 
+    const generatorId = (): any => {
+      const _number = new Date().getTime();
+      const id = `ved-select-file-input-${_number}`;
+      const exist = document?.body?.querySelector(`#${id}`);
+
+      if (exist) generatorId();
+      else uniqueId.value = `ved-select-file-input-${Math.random()}`;
+    };
+
     const events = ['dragenter', 'dragover', 'dragleave', 'drop'];
     onMounted(function () {
+      generatorId();
       events.forEach((eventName) => {
         document?.body?.addEventListener(eventName, preventDefaults);
       });
@@ -349,6 +360,7 @@ export default defineComponent({
     });
 
     return {
+      uniqueId,
       configComponent,
       inputFileVed,
       labelFileRef,

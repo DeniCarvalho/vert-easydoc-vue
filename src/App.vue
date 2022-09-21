@@ -13,15 +13,22 @@
       :labels="config.labels"
       :settings="config.settings"
       :colors="config.colors"
-      :fileLink="urlFile"
-      @success="success"
-      @remove="urlFile = ''"
+      :fileLink="urlFileSmall"
+      @success="successSmall"
+      @remove="urlFileSmall = ''"
     />
     <div class="ved-w-full ved-my-4 ved-mt-10">
       <h4 class="ved-text-primaryPure ved-p-0 ved-pb-2 ved-m-0">Medium</h4>
       <div class="ved-w-full ved-h-px ved-bg-primaryPure"></div>
     </div>
-    <VInputFile :labels="config.labels" :settings="config.settings" />
+    <VInputFile
+      :labels="config.labels"
+      :settings="config.settings"
+      :colors="config.colors"
+      :fileLink="urlFileMedium"
+      @success="successMedium"
+      @remove="urlFileMedium = ''"
+    />
 
     <div class="ved-w-full ved-my-4 ved-mt-10">
       <h4 class="ved-text-primaryPure ved-p-0 ved-pb-2 ved-m-0">Large</h4>
@@ -32,6 +39,10 @@
       :size="SizeEnum.Large"
       :labels="config.labels"
       :settings="config.settings"
+      :colors="config.colors"
+      :fileLink="urlFileLarge"
+      @success="successLarge"
+      @remove="urlFileLarge = ''"
     />
   </div>
 </template>
@@ -62,13 +73,30 @@ export default defineComponent({
       },
     });
 
-    const urlFile = ref<string>('');
+    const urlFileSmall = ref<string>('');
+    const urlFileMedium = ref<string>('');
+    const urlFileLarge = ref<string>('');
 
-    const success = (data: string) => {
-      urlFile.value = data;
+    const successSmall = (data: string) => {
+      urlFileSmall.value = data;
+    };
+    const successMedium = (data: string) => {
+      urlFileSmall.value = data;
+    };
+    const successLarge = (data: string) => {
+      urlFileSmall.value = data;
     };
 
-    return { config, SizeEnum, urlFile, success };
+    return {
+      config,
+      SizeEnum,
+      urlFileSmall,
+      urlFileMedium,
+      urlFileLarge,
+      successSmall,
+      successMedium,
+      successLarge,
+    };
   },
 });
 </script>

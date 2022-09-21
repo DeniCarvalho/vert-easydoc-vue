@@ -1,9 +1,9 @@
 <template>
-  <div id="preview-step-ved" class="ved-w-full">
+  <div id="preview-step-ved" class="ved-w-full ved-pb-10">
     <div
-      class="tools-ved ved-w-auto ved-h-14 ved-shadow-md ved-flex ved-items-center ved-justify-between ved-px-8"
+      class="tools-ved ved-w-auto ved-h-14 ved-shadow-md ved-grid ved-grid-cols-3 ved-px-8"
     >
-      <div class="ved-flex ved-items-center">
+      <div class="ved-flex ved-items-center ved-justify-start">
         <Icon
           :icon="Menu"
           class="ved-text-white ved-cursor-pointer ved-h-6"
@@ -34,38 +34,43 @@
         />
       </div>
 
-      <div>
+      <div class="ved-flex ved-items-center ved-justify-center">
+        <input
+          ref="pageActiveRef"
+          type="text"
+          class="ved-text-white ved-bg-black/[.50]"
+          id="ved-input-page-active"
+          name="ved-input-page-active"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          v-model="pageActive"
+          @keyup.enter="onInputPageActive"
+          @blur="onInputPageActive"
+          @focus="onFocus"
+        />
+        <div class="ved-text-white ved-px-2">/</div>
+        <div class="ved-text-white">{{ doc.pages.length }}</div>
+      </div>
+
+      <div class="ved-flex ved-items-center ved-justify-end">
         <Icon
           :icon="Close"
           class="ved-text-white ved-cursor-pointer ved-ml-4"
           @click="close"
         />
       </div>
-
-      <!-- <Icon
-          :icon="Pencil"
-          class="ved-text-white ved-cursor-pointer ved-ml-2 btn-edit"
-          :size="15"
-          @click="editName"
-        />
-        <Icon
-          :icon="Check"
-          class="ved-text-white ved-cursor-pointer ved-ml-2 btn-check ved-hidden"
-          :size="15"
-        /> -->
     </div>
-    <div class="ved-w-auto ved-grid ved-grid-cols-3">
-      <div class="">07</div>
-      <div class="ved-col-span-2">06</div>
-    </div>
-
-    <!-- <div
-      class="col-span-2 ved-h-screen ved-flex ved-flex-col ved-justify-start ved-items-center document-ved ved-overflow-auto"
+    <div
+      ref="pagesRef"
+      class="ved-w-auto ved-h-screen ved-flex ved-flex-col ved-justify-start ved-items-center document-ved ved-overflow-auto"
     >
       <div
-        class="ved-p-8 ved-w-full ved-h-auto"
+        class="ved-py-5 ved-w-full ved-h-auto ved-page-item-list"
         v-for="(item, i) in doc.pages"
         :key="i"
+        :class="{ 'ved-pb-20': doc.pages.length - 1 == i }"
+        :id="`ved-page-item-${i + 1}`"
       >
         <img
           draggable="false"
@@ -74,61 +79,6 @@
         />
       </div>
     </div>
-    <div class="tools-ved ved-h-screen">
-      <div class="ved-w-auto ved-h-full ved-flex ved-flex-col">
-        <div
-          class="ved-h-auto ved-flex ved-justify-between ved-items-center ved-border-0 ved-border-b ved-border-black ved-p-5"
-        >
-          <div class="ved-relative ved-w-96 ved-flex ved-items-center">
-            <div class="ved-flex ved-items-center ved-relative">
-              <div
-                ref="nameRef"
-                class="editable-name ved-text-sm ved-text-white ved-px-2 ved-max-w-sm ved-relative"
-                @input="onInputName"
-                @keydown="onKeyDown"
-                contenteditable
-                autocorrect="off"
-                autocapitalize="off"
-                spellcheck="false"
-              >
-                {{ docName }}
-              </div>
-
-              <Icon
-                :icon="Pencil"
-                class="ved-text-white ved-cursor-pointer ved-ml-2 btn-edit"
-                :size="15"
-                @click="editName"
-              />
-              <Icon
-                :icon="Check"
-                class="ved-text-white ved-cursor-pointer ved-ml-2 btn-check ved-hidden"
-                :size="15"
-              />
-            </div>
-          </div>
-
-          <div class="ved-flex ved-items-center">
-            <Icon
-              :icon="Reload"
-              class="ved-text-white ved-cursor-pointer"
-              @click="reset"
-            />
-            <Icon
-              :icon="Close"
-              class="ved-text-white ved-cursor-pointer ved-ml-4"
-              @click="close"
-            />
-          </div>
-        </div>
-
-        <div
-          class="ved-w-full ved-h-full ved-flex ved-flex-col ved-items-start"
-        >
-          <h1>Teste</h1>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 <style lang="scss" src="./Preview.scss" />
@@ -171,6 +121,10 @@ export default defineComponent({
     embedSrc.value = urlBase;
 
     const nameRef = ref<any>(null);
+    const pageActiveRef = ref<any>(null);
+    const pagesRef = ref<any>(null);
+    const pageActive = ref<number>(1);
+    const pageActiveBKP = ref<number>(1);
 
     const next = () => {
       emit('next');
@@ -210,7 +164,40 @@ export default defineComponent({
       docName.value = doc.value?.name || '';
     };
 
+    const detectedScroll = () => {
+      const scroll = document.querySelector('.document-ved')?.scrollTop;
+      const pages = document.querySelectorAll('.ved-page-item-list');
+      const pageHeight = pages[0]?.clientHeight;
+      const _pageActive = Math.floor(scroll! / pageHeight!) + 1;
+
+      if (_pageActive !== pageActive.value) {
+        pageActive.value = _pageActive;
+      }
+    };
+
+    const onInputPageActive = ({ target }: any) => {
+      const value = target && target.value ? parseInt(target.value) : -1;
+      if (value > 0 && value <= doc.value.pages.length) {
+        const _page = document.getElementById(`ved-page-item-${value}`);
+        pageActiveBKP.value = value;
+        pagesRef.value?.scrollTo({
+          top: _page?.offsetTop,
+          behavior: 'smooth',
+        });
+      } else {
+        pageActive.value = pageActiveBKP.value;
+      }
+    };
+
+    const onFocus = (event?: any) => {
+      event?.target?.setSelectionRange(0, event?.target?.value.length);
+    };
+
     onMounted(() => {
+      pagesRef.value?.addEventListener('scroll', () => {
+        detectedScroll();
+      });
+
       nameRef.value?.addEventListener(
         'focus',
         function () {
@@ -253,8 +240,11 @@ export default defineComponent({
       docName,
       doc,
       embedSrc,
+      pagesRef,
+      pageActiveRef,
       nameRef,
       extensionFile,
+      pageActive,
       next,
       close,
       onInputName,
@@ -262,6 +252,8 @@ export default defineComponent({
       editName,
       reset,
       enterPressed,
+      onInputPageActive,
+      onFocus,
       Close,
       Pencil,
       Reload,
