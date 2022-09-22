@@ -66,7 +66,7 @@
       class="ved-w-auto ved-h-screen ved-flex ved-flex-col ved-justify-start ved-items-center document-ved ved-overflow-auto"
     >
       <div
-        class="ved-py-5 ved-w-full ved-h-auto ved-page-item-list"
+        class="ved-py-5 ved-w-full ved-h-auto ved-page-item-list ved-flex ved-flex-col ved-justify-start ved-items-center"
         v-for="(item, i) in doc.pages"
         :key="i"
         :class="{ 'ved-pb-20': doc.pages.length - 1 == i }"
@@ -74,8 +74,7 @@
       >
         <img
           draggable="false"
-          height="1000"
-          class="ved-object-contain ved-rounded-md ved-shadow-xl"
+          class="ved-object-contain ved-rounded-md ved-shadow-xl ved-img-page-large"
           v-bind:src="item.base64"
         />
       </div>
