@@ -74,8 +74,9 @@
       >
         <img
           draggable="false"
+          height="1000"
           class="ved-object-contain ved-rounded-md ved-shadow-xl"
-          v-bind:src="'data:image/jpeg;base64,' + item.base64"
+          v-bind:src="item.base64"
         />
       </div>
     </div>

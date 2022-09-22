@@ -68,7 +68,7 @@ export default defineComponent({
         maxSize: 'Tamanho',
       },
       settings: {
-        endpoint: 'http://localhost:5005/go',
+        endpoint: 'http://localhost:5005/api/v1/go',
         // maxSize: '12MB',
       },
     });

@@ -153,7 +153,7 @@ export default defineComponent({
     const configComponent = ref<any>({
       settings: {
         ...{
-          supportedTypes: 'PDF, DOCX, DOC',
+          supportedTypes: 'PDF',
           maxSize: '10MB',
           endpoint: 'https://api.ved.com.br/v1/upload',
           apiToken: '',
