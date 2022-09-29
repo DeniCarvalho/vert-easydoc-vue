@@ -1,23 +1,41 @@
 #preview-step-ved {
   .document-ved {
-    background-color: #525659;
+    background-color: #525659 !important;
   }
   .tools-ved {
-    background-color: rgb(50 54 57);
+    background-color: rgb(50 54 57) !important;
     box-shadow: 0 -2px 8px rgb(0 0 0 / 9%), 0 4px 8px rgb(0 0 0 / 6%),
-      0 1px 2px rgb(0 0 0 / 30%), 0 2px 6px rgb(0 0 0 / 15%);
-    position: relative;
+      0 1px 2px rgb(0 0 0 / 30%), 0 2px 6px rgb(0 0 0 / 15%) !important;
+    position: relative !important;
+  }
+  .menu-ved {
+    background-color: rgb(50, 54, 57) !important;
   }
 
   #ved-input-page-active {
-    width: 20px;
-    text-align: center;
-    border: none;
+    width: 20px !important;
+    text-align: center !important;
+    border: none !important;
   }
 
   .ved-page-item-list {
     .ved-img-page-large {
       height: 1000px !important;
+    }
+    .ved-img-page-small {
+      height: 170px !important;
+    }
+
+    .inactive-img-ved {
+      -webkit-filter: brightness(0.8) !important;
+      filter: brightness(0.8) !important;
+    }
+
+    &.mini-item-ved {
+      img:hover {
+        -webkit-filter: brightness(0.9) !important;
+        filter: brightness(0.9) !important;
+      }
     }
   }
 }

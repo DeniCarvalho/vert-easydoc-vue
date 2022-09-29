@@ -1,10 +1,11 @@
 <template>
   <div id="preview-step-ved" class="ved-w-full ved-pb-10">
     <div
-      class="tools-ved ved-w-auto ved-h-14 ved-shadow-md ved-grid ved-grid-cols-3 ved-px-8"
+      class="tools-ved ved-w-auto ved-h-14 ved-shadow-md ved-grid ved-grid-cols-3 ved-px-8 ved-z-20"
     >
       <div class="ved-flex ved-items-center ved-justify-start">
         <Icon
+          @click="menuPagesOpen = !menuPagesOpen"
           :icon="Menu"
           class="ved-text-white ved-cursor-pointer ved-h-6"
           :size="25"
@@ -78,6 +79,38 @@
           v-bind:src="item.base64"
         />
       </div>
+
+      <div
+        ref="pagesMenuRef"
+        class="menu-ved ved-fixed ved-h-screen ved-left-0 ved-shadow-2xl ved-duration-500 ved-overflow-auto ved-pt-2"
+        :class="{
+          'ved-w-0': !menuPagesOpen,
+          'ved-w-64': menuPagesOpen,
+        }"
+      >
+        <div
+          class="ved-py-3 ved-w-full ved-h-auto ved-page-item-list mini-item-ved ved-flex ved-flex-col ved-justify-start ved-items-center"
+          v-for="(item, i) in doc.pages"
+          :key="i"
+          :class="{ 'ved-pb-20': doc.pages.length - 1 == i }"
+          :id="`ved-page-item-menu-${i + 1}`"
+          @click="onInputPageActive({ target: { value: i + 1 } })"
+        >
+          <img
+            draggable="false"
+            class="ved-object-contain ved-rounded-md ved-img-page-small"
+            :class="{
+              'ved-border-solid ved-border-4 ved-border-sky-300':
+                pageActive == i + 1,
+              'inactive-img-ved': pageActive != i + 1,
+            }"
+            v-bind:src="item.base64"
+          />
+          <div class="ved-text-white ved-font-semibold ved-text-xs ved-mt-2">
+            {{ i + 1 }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -101,6 +134,8 @@ export default defineComponent({
   components: { Icon },
   setup(props, { emit }) {
     const doc = ref<IDocument>(props.file as IDocument);
+    console.log({ doc });
+    const menuPagesOpen = ref<boolean>(false);
 
     const maxLength = ref(40);
     const docName = ref<string>('');
@@ -109,20 +144,10 @@ export default defineComponent({
     const extensionFile = ref<string>('');
     extensionFile.value = doc.value.extension;
 
-    const urlBase =
-      extensionFile.value === 'pdf'
-        ? URL.createObjectURL(doc.value.file) +
-          '#toolbar=0&statusbar=0&navpanes=0&scrollbar=0'
-        : `https://view.officeapps.live.com/op/embed.aspx?src=${URL.createObjectURL(
-            doc.value.file
-          )}`;
-
-    const embedSrc = ref<string>('');
-    embedSrc.value = urlBase;
-
     const nameRef = ref<any>(null);
     const pageActiveRef = ref<any>(null);
     const pagesRef = ref<any>(null);
+    const pagesMenuRef = ref<any>(null);
     const pageActive = ref<number>(1);
     const pageActiveBKP = ref<number>(1);
 
@@ -172,17 +197,30 @@ export default defineComponent({
 
       if (_pageActive !== pageActive.value) {
         pageActive.value = _pageActive;
+        const _pageMenu = document.getElementById(
+          `ved-page-item-menu-${pageActive.value}`
+        );
+        pagesMenuRef.value?.scrollTo({
+          top: _pageMenu?.offsetTop,
+        });
       }
     };
 
     const onInputPageActive = ({ target }: any) => {
       const value = target && target.value ? parseInt(target.value) : -1;
       if (value > 0 && value <= doc.value.pages.length) {
-        const _page = document.getElementById(`ved-page-item-${value}`);
         pageActiveBKP.value = value;
+        const _page = document.getElementById(`ved-page-item-${value}`);
         pagesRef.value?.scrollTo({
           top: _page?.offsetTop,
           behavior: 'smooth',
+        });
+
+        const _pageMenu = document.getElementById(
+          `ved-page-item-menu-${value}`
+        );
+        pagesMenuRef.value?.scrollTo({
+          top: _pageMenu?.offsetTop,
         });
       } else {
         pageActive.value = pageActiveBKP.value;
@@ -237,10 +275,12 @@ export default defineComponent({
     });
 
     return {
+      menuPagesOpen,
       docName,
       doc,
-      embedSrc,
+
       pagesRef,
+      pagesMenuRef,
       pageActiveRef,
       nameRef,
       extensionFile,

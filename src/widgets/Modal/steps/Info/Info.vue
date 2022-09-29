@@ -1,12 +1,12 @@
 <template>
   <div class="ved-w-full">
     <p class="ved-text-left ved-text-sm ved-text-black ved-p-0 ved-m-0">
-      A
-      <i class="ved-text-primaryPure">Vert Sign</i> auxilia na criação de uma
-      página de assinaturas personalizada para o seu negócio. <br /><br />
+      <i class="ved-text-primaryPure">Vertsign</i> é responsável por manipular
+      documentos e fornecer informações suficientes para enviá-los para
+      assinatura via Docusign. <br /><br />
       Faça o upload do documento
-      <b class="ved-text-primaryPure">sem a página de assinaturas</b> e defina
-      todas as partes que deverão assinar.
+      <b class="ved-text-primaryPure">com a página de assinaturas</b> e defina
+      todas os participantes que deverão assinar.
     </p>
     <div class="ved-w-full ved-flex ved-flex-col ved-items-start ved-mt-4">
       <div class="ved-text-primaryPure ved-text-xs ved-text-center">
