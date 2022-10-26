@@ -1,7 +1,7 @@
 <template>
-  <div id="preview-step-ved" class="ved-w-full ved-pb-10">
+  <div id="preview-step-ved" class="ved-w-full">
     <div
-      class="tools-ved ved-w-auto ved-h-14 ved-shadow-md ved-grid ved-grid-cols-3 ved-px-8 ved-z-20"
+      class="tools-ved ved-w-full ved-h-14 ved-shadow-md ved-grid ved-grid-cols-3 ved-px-8 ved-z-20 ved-fixed"
     >
       <div class="ved-flex ved-items-center ved-justify-start">
         <Icon
@@ -39,7 +39,7 @@
         <input
           ref="pageActiveRef"
           type="text"
-          class="ved-text-white ved-bg-black/[.50]"
+          class="ved-text-white ved-bg-black/[.50] ved-mt-1"
           id="ved-input-page-active"
           name="ved-input-page-active"
           autocorrect="off"
@@ -67,17 +67,20 @@
       class="ved-w-auto ved-h-screen ved-flex ved-flex-col ved-justify-start ved-items-center document-ved ved-overflow-auto"
     >
       <div
-        class="ved-py-5 ved-w-full ved-h-auto ved-page-item-list ved-flex ved-flex-col ved-justify-start ved-items-center"
+        class="ved-py-5 ved-w-full ved-h-auto ved-page-item-list ved-flex ved-flex-col ved-justify-start ved-items-center ved-relative"
         v-for="(item, i) in doc.pages"
         :key="i"
-        :class="{ 'ved-pb-20': doc.pages.length - 1 == i }"
+        :class="{ 'ved-pt-20': i == 0 }"
         :id="`ved-page-item-${i + 1}`"
       >
-        <img
-          draggable="false"
-          class="ved-object-contain ved-rounded-md ved-shadow-xl ved-img-page-large"
-          v-bind:src="item.base64"
-        />
+        <div class="ved-w-auto ved-h-auto ved-relative">
+          <img
+            @click="drawDot"
+            draggable="false"
+            class="ved-object-contain ved-rounded-md ved-shadow-xl ved-img-page-large ved-relative"
+            v-bind:src="item.base64"
+          />
+        </div>
       </div>
 
       <div
@@ -92,7 +95,7 @@
           class="ved-py-3 ved-w-full ved-h-auto ved-page-item-list mini-item-ved ved-flex ved-flex-col ved-justify-start ved-items-center"
           v-for="(item, i) in doc.pages"
           :key="i"
-          :class="{ 'ved-pb-20': doc.pages.length - 1 == i }"
+          :class="{ 'ved-pt-16': i == 0 }"
           :id="`ved-page-item-menu-${i + 1}`"
           @click="onInputPageActive({ target: { value: i + 1 } })"
         >
@@ -231,6 +234,28 @@ export default defineComponent({
       event?.target?.setSelectionRange(0, event?.target?.value.length);
     };
 
+    const drawDot = (event: any) => {
+      const target = event.target;
+      console.log({ event });
+      const rect = target.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      console.log(mouseX + ' ' + mouseY);
+      const color = '#000000';
+      const size = '50px';
+      const zIndex = '999999';
+      const div = document.createElement('div');
+      div.style.position = 'absolute';
+      div.style.top = mouseY + 'px';
+      div.style.left = mouseX + 'px';
+      div.style.width = size;
+      div.style.height = size;
+      div.style.backgroundColor = color;
+      div.style.zIndex = zIndex;
+      target.parentElement.appendChild(div);
+    };
+
     onMounted(() => {
       pagesRef.value?.addEventListener('scroll', () => {
         detectedScroll();
@@ -294,6 +319,7 @@ export default defineComponent({
       enterPressed,
       onInputPageActive,
       onFocus,
+      drawDot,
       Close,
       Pencil,
       Reload,
