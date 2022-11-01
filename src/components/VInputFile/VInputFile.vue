@@ -231,7 +231,7 @@ export default defineComponent({
                 name: name ?? documentFile.value.name,
                 extension: extension ?? '',
                 pages,
-                file: documentFile.value,
+                file: data.file || '',
               });
 
               // emit(
@@ -244,6 +244,7 @@ export default defineComponent({
             }
           } else {
             if (request.value.response) {
+              uploadProgress.value = undefined;
               const data = JSON.parse(request.value.response);
               throw new Error(data?.message || 'Error');
             } else throw new Error('Error');

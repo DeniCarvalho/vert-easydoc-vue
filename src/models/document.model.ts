@@ -2,7 +2,7 @@ import { IPage, PageModel } from './page.model';
 
 export class DocumentModel {
   name: string;
-  file: File;
+  file: string;
   extension: string;
   pages: IPage[];
 
@@ -15,20 +15,21 @@ export class DocumentModel {
 
   static fromJson(response: any): IDocument {
     const pages: IPage[] =
-      response?.cultivations?.map((page: any) => PageModel.fromJson(page)) || [];
+      response?.cultivations?.map((page: any) => PageModel.fromJson(page)) ||
+      [];
 
     return new DocumentModel({
       name: response.name || 'Nome do documento',
       file: response.file,
       extension: response.extension || '',
-      pages: pages
+      pages: pages,
     });
   }
 }
 
 export interface IDocument {
   name: string;
-  file: File;
+  file: string;
   extension: string;
   pages: IPage[];
 }
