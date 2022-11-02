@@ -133,16 +133,20 @@
       <div class="ved-font-thin ved-text-gray-400 ved-text-xs">
         Dados de uma das partes que assinará o documento
       </div>
-      <div
+      <form
         class="ved-w-full ved-mt-5 ved-flex ved-flex-col ved-justify-start ved-items-start"
+        @submit.prevent="addSign"
       >
         <div class="ved-grid ved-w-full ved-h-auto">
-          <label for="inp" class="inp">
+          <label for="name" class="inp">
             <input
               type="text"
-              id="inp"
+              name="name"
+              id="name"
               placeholder="&nbsp;"
               v-model="formSign.name"
+              autocomplete="off"
+              required
             />
             <span class="label">Nome</span>
             <span class="focus-bg"></span>
@@ -150,12 +154,14 @@
         </div>
 
         <div class="ved-grid ved-w-full ved-h-auto ved-mt-4">
-          <label for="inp" class="inp">
+          <label for="email" class="inp">
             <input
-              type="text"
-              id="inp"
+              type="email"
+              id="email"
               placeholder="&nbsp;"
               v-model="formSign.email"
+              autocomplete="off"
+              required
             />
             <span class="label">E-mail</span>
             <span class="focus-bg"></span>
@@ -163,11 +169,11 @@
         </div>
 
         <div
-          class="ved-w-full ved-flex ved-justify-between ved-items-center ved-mt-5"
+          class="ved-w-full ved-flex ved-justify-between ved-items-center ved-mt-8"
         >
           <div>
             <button
-              @click="addSign"
+              type="submit"
               class="ved-bg-cyan-600 hover:ved-bg-cyan-700 ved-text-white ved-font-bold ved-py-2 ved-px-4 ved-rounded ved-border-0 ved-cursor-pointer"
             >
               {{ formSign.id ? 'Atualizar' : 'Adicionar' }}
@@ -180,9 +186,18 @@
               Cancelar
             </button>
           </div>
-          <div></div>
+          <div>
+            <Icon
+              v-if="formSign.id"
+              title="Remover parte"
+              :icon="Trash"
+              class="ved-text-red-600 hover:ved-text-red-700 ved-cursor-pointer ved-h-5"
+              :size="22"
+              @click="removeSign(formSign.id)"
+            />
+          </div>
         </div>
-      </div>
+      </form>
     </div>
 
     <div
@@ -208,12 +223,20 @@
 </template>
 <style lang="scss" src="./Preview.scss" />
 <script lang="ts">
-import { defineComponent, onMounted, computed, ref, PropType } from 'vue';
+import {
+  defineComponent,
+  onMounted,
+  computed,
+  ref,
+  PropType,
+  watch,
+} from 'vue';
 import Close from 'vue-material-design-icons/Close.vue';
 import Pencil from 'vue-material-design-icons/Pencil.vue';
 import Reload from 'vue-material-design-icons/Reload.vue';
 import Check from 'vue-material-design-icons/CheckBold.vue';
 import Menu from 'vue-material-design-icons/Menu.vue';
+import Trash from 'vue-material-design-icons/TrashCan.vue';
 import {
   IDataSign,
   IDocument,
@@ -438,6 +461,9 @@ export default defineComponent({
     };
 
     const addSign = () => {
+      if (!formSign.value.name || !formSign.value.email) {
+        return;
+      }
       if (!formSign.value.id) {
         signatures.value.push({
           id: modalSign.value?.id || signatures.value.length + 1,
@@ -531,6 +557,7 @@ export default defineComponent({
         1
       );
       document.querySelector(`#sign-person-${id}`)?.remove();
+      cancelSign();
     };
 
     const finish = () => {
@@ -556,6 +583,33 @@ export default defineComponent({
         } as IDataFinish);
       }
     };
+
+    watch(
+      () => formSign.value.name,
+      function (value) {
+        if (value) {
+          formSign.value.name = value.replace(/[^a-zA-Z ]/g, '');
+          // To lower case
+          formSign.value.name = formSign.value.name.toLowerCase();
+          //Came case to upper
+          formSign.value.name = formSign.value.name
+            .split(' ')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+        }
+      }
+    );
+
+    watch(
+      () => formSign.value.email,
+      function (value) {
+        if (value) {
+          formSign.value.email = value.replace(/[^a-zA-Z0-9@.]/g, '');
+          // To lower case
+          formSign.value.email = formSign.value.email.toLowerCase();
+        }
+      }
+    );
 
     onMounted(() => {
       const elementsPage = document.querySelectorAll('.ved-img-page-large');
@@ -676,6 +730,7 @@ export default defineComponent({
       Reload,
       Check,
       Menu,
+      Trash,
     };
   },
 });
