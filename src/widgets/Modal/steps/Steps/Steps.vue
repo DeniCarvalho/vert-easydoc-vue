@@ -2,8 +2,11 @@
   <div
     id="step-container-ved"
     v-if="isOpen"
-    class="ved-backdrop-blur-md"
-    :class="{ 'out-ved': outAnimate, 'animated-ved': isOpen }"
+    :class="{
+      'out-ved': outAnimate,
+      'animated-ved': isOpen,
+      'ved-backdrop-blur-md': !fullscreen,
+    }"
   >
     <div class="modal-background-ved">
       <div class="modal-ved" :class="{ 'ved-h-full ved-w-full': fullscreen }">

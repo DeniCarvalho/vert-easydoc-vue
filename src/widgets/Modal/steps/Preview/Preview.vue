@@ -68,13 +68,13 @@
     </div>
     <div
       ref="pagesRef"
-      class="ved-w-auto ved-h-screen ved-flex ved-flex-col ved-justify-start ved-items-center document-ved ved-overflow-auto"
+      :style="{ height: `${heightWindow}px` }"
+      class="ved-mt-14 ved-fixed ved-w-full ved-flex ved-flex-col ved-justify-start ved-items-center document-ved ved-overflow-y-auto ved-overflow-x-hidden"
     >
       <div
         class="ved-py-5 ved-w-full ved-h-auto ved-page-item-list ved-flex ved-flex-col ved-justify-start ved-items-center ved-relative"
         v-for="(item, i) in doc.pages"
         :key="i"
-        :class="{ 'ved-pt-20': i == 0 }"
         :id="`ved-page-item-${i + 1}`"
       >
         <div class="ved-w-auto ved-h-auto ved-relative">
@@ -93,7 +93,8 @@
 
       <div
         ref="pagesMenuRef"
-        class="menu-ved ved-fixed ved-h-screen ved-left-0 ved-shadow-2xl ved-duration-500 ved-overflow-auto ved-pt-2"
+        :style="{ height: `${heightWindow}px` }"
+        class="menu-ved ved-fixed ved-left-0 ved-shadow-2xl ved-duration-500 ved-overflow-y-auto ved-overflow-x-hidden"
         :class="{
           'ved-w-0': !menuPagesOpen,
           'ved-w-64': menuPagesOpen,
@@ -103,7 +104,6 @@
           class="ved-py-3 ved-w-full ved-h-auto ved-page-item-list mini-item-ved ved-flex ved-flex-col ved-justify-start ved-items-center"
           v-for="(item, i) in doc.pages"
           :key="i"
-          :class="{ 'ved-pt-16': i == 0 }"
           :id="`ved-page-item-menu-${i + 1}`"
           @click="onInputPageActive({ target: { value: i + 1 } })"
         >
@@ -204,7 +204,7 @@ interface IDataSign {
   yPosition: number;
 }
 
-import { defineComponent, onMounted, reactive, ref } from 'vue';
+import { defineComponent, onMounted, computed, ref } from 'vue';
 import Close from 'vue-material-design-icons/Close.vue';
 import Pencil from 'vue-material-design-icons/Pencil.vue';
 import Reload from 'vue-material-design-icons/Reload.vue';
@@ -248,6 +248,7 @@ export default defineComponent({
       xPosition: 0,
       yPosition: 0,
     });
+    const heightWindow = ref<number>(0);
 
     const next = () => {
       emit('next');
@@ -556,6 +557,18 @@ export default defineComponent({
       overlay?.addEventListener('click', () =>
         pageModal?.classList.remove('active-modal-sign')
       );
+
+      const height = window.innerHeight;
+      if (height) {
+        heightWindow.value = height - 50;
+      }
+
+      window.addEventListener('resize', () => {
+        const _height = window.innerHeight;
+        if (_height) {
+          heightWindow.value = _height - 50;
+        }
+      });
     });
 
     return {
@@ -569,6 +582,7 @@ export default defineComponent({
       extensionFile,
       pageActive,
       formSign,
+      heightWindow,
       next,
       close,
       onInputName,

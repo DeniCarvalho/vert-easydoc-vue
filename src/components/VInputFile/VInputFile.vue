@@ -56,7 +56,7 @@
       :id="uniqueId"
       type="file"
       :name="uniqueId"
-      accept=".doc,.docx,application/pdf"
+      accept="application/pdf"
     />
 
     <Done
