@@ -33,3 +33,31 @@ export interface IDocument {
   extension: string;
   pages: IPage[];
 }
+
+export interface IModalSign {
+  target: any;
+  div: HTMLElement | null;
+  id: number;
+  xPosition: number;
+  yPosition: number;
+}
+
+export interface IDataSign {
+  id: number;
+  name: string;
+  email: string;
+  page: number;
+  xPosition: number;
+  yPosition: number;
+}
+
+export interface IDataFinish {
+  signatures: IDataSign[];
+  name: string;
+  file: string;
+}
+
+export interface IPartyDefault {
+  name: string;
+  email: string;
+}

@@ -184,33 +184,43 @@
         </div>
       </div>
     </div>
+
+    <div
+      class="ved-fixed ved-bottom-10 ved-right-14"
+      v-if="signatures.length > 0"
+    >
+      <button
+        type="button"
+        @click="finish"
+        class="ved-px-2 ved-py-1.5 ved-bg-amber-400 ved-rounded-md ved-text-black ved-outline-none ved-shadow-lg ved-transform active:ved-scale-x-75 ved-transition-transform ved-flex ved-justify-evenly ved-items-center ved-border-0 ved-cursor-pointer ved-w-28"
+      >
+        <div>
+          <svg class="ved-h-6 ved-w-6" viewBox="0 0 20 20">
+            <path
+              d="M10.219,1.688c-4.471,0-8.094,3.623-8.094,8.094s3.623,8.094,8.094,8.094s8.094-3.623,8.094-8.094S14.689,1.688,10.219,1.688 M10.219,17.022c-3.994,0-7.242-3.247-7.242-7.241c0-3.994,3.248-7.242,7.242-7.242c3.994,0,7.241,3.248,7.241,7.242C17.46,13.775,14.213,17.022,10.219,17.022 M15.099,7.03c-0.167-0.167-0.438-0.167-0.604,0.002L9.062,12.48l-2.269-2.277c-0.166-0.167-0.437-0.167-0.603,0c-0.166,0.166-0.168,0.437-0.002,0.603l2.573,2.578c0.079,0.08,0.188,0.125,0.3,0.125s0.222-0.045,0.303-0.125l5.736-5.751C15.268,7.466,15.265,7.196,15.099,7.03"
+            ></path>
+          </svg>
+        </div>
+        <div class="ved-ml-2">Finalizar</div>
+      </button>
+    </div>
   </div>
 </template>
 <style lang="scss" src="./Preview.scss" />
 <script lang="ts">
-interface IModalSign {
-  target: any;
-  div: HTMLElement | null;
-  id: number;
-  xPosition: number;
-  yPosition: number;
-}
-
-interface IDataSign {
-  id: number;
-  name: string;
-  email: string;
-  xPosition: number;
-  yPosition: number;
-}
-
-import { defineComponent, onMounted, computed, ref } from 'vue';
+import { defineComponent, onMounted, computed, ref, PropType } from 'vue';
 import Close from 'vue-material-design-icons/Close.vue';
 import Pencil from 'vue-material-design-icons/Pencil.vue';
 import Reload from 'vue-material-design-icons/Reload.vue';
 import Check from 'vue-material-design-icons/CheckBold.vue';
 import Menu from 'vue-material-design-icons/Menu.vue';
-import { IDocument } from '@/models/document.model';
+import {
+  IDataSign,
+  IDocument,
+  IModalSign,
+  IDataFinish,
+  IPartyDefault,
+} from '@/models/document.model';
 import Icon from '@/widgets/Icon/Icon.vue';
 import Sign from './components/Sign/Sign.vue';
 
@@ -218,6 +228,10 @@ export default defineComponent({
   props: {
     file: {
       required: true,
+    },
+    parties: {
+      type: Array as PropType<Array<IPartyDefault>>,
+      required: false,
     },
   },
   components: { Icon, Sign },
@@ -245,6 +259,7 @@ export default defineComponent({
       id: 0,
       name: '',
       email: '',
+      page: 0,
       xPosition: 0,
       yPosition: 0,
     });
@@ -407,6 +422,7 @@ export default defineComponent({
           id: 0,
           name: '',
           email: '',
+          page: 0,
           xPosition: 0,
           yPosition: 0,
         };
@@ -427,6 +443,7 @@ export default defineComponent({
           id: modalSign.value?.id || signatures.value.length + 1,
           name: formSign.value.name || '',
           email: formSign.value.email || '',
+          page: 0,
           xPosition: modalSign.value?.xPosition || 0,
           yPosition: modalSign.value?.yPosition || 0,
         });
@@ -436,12 +453,12 @@ export default defineComponent({
         <div class="name">${formSign.value.name}</div>
         <div class="email">${formSign.value.email}</div>`;
 
-          const pageModal = document.querySelector('#preview-step-ved');
-          pageModal?.classList.remove('active-modal-sign');
+          modalSign.value.div.style.display = 'none';
 
           modalSign.value?.target.parentElement.appendChild(
             modalSign.value?.div
           );
+          setPageAddSign(modalSign.value?.id || signatures.value.length + 1);
         }
       } else {
         const signIdx = signatures.value.findIndex(
@@ -469,6 +486,33 @@ export default defineComponent({
       }
     };
 
+    const setPageAddSign = (id: number) => {
+      const parentElementDot = document.querySelector(
+        `#sign-person-${id}`
+      )?.parentElement;
+      if (parentElementDot) {
+        let elms = parentElementDot.querySelector('[class*=page-item-]');
+        if (elms) {
+          const classes = elms.className.split(' ');
+          const page = classes.find((c) => c.includes('page-item-'));
+          if (page) {
+            const pageIdx = parseInt(page.replace('page-item-', ''));
+            if (pageIdx) {
+              const signIdx = signatures.value.findIndex((s) => s.id === id);
+              signatures.value[signIdx].page = pageIdx;
+              const pageModal = document.querySelector('#preview-step-ved');
+              pageModal?.classList.remove('active-modal-sign');
+              if (modalSign.value?.div) {
+                modalSign.value.div.style.display = 'block';
+                return;
+              }
+            }
+          }
+        }
+      }
+      removeSign(id);
+    };
+
     const cancelSign = () => {
       const pageModal = document.querySelector('#preview-step-ved');
       pageModal?.classList.remove('active-modal-sign');
@@ -486,6 +530,31 @@ export default defineComponent({
         signatures.value.findIndex((item) => item.id === id),
         1
       );
+      document.querySelector(`#sign-person-${id}`)?.remove();
+    };
+
+    const finish = () => {
+      // Check fields signatures
+      let isValid = true;
+      signatures.value.forEach((sign) => {
+        if (
+          !sign.name ||
+          !sign.email ||
+          !sign.page ||
+          !sign.xPosition ||
+          !sign.yPosition
+        ) {
+          isValid = false;
+        }
+      });
+
+      if (isValid) {
+        emit('finish', {
+          signatures: signatures.value,
+          name: docName.value,
+          file: doc.value.file,
+        } as IDataFinish);
+      }
     };
 
     onMounted(() => {
@@ -583,6 +652,7 @@ export default defineComponent({
       pageActive,
       formSign,
       heightWindow,
+      signatures,
       next,
       close,
       onInputName,
@@ -600,6 +670,7 @@ export default defineComponent({
       addSign,
       cancelSign,
       removeSign,
+      finish,
       Close,
       Pencil,
       Reload,

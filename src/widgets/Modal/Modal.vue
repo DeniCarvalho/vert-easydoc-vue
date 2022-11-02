@@ -10,6 +10,7 @@
       :supportedTypesLabel="supportedTypesLabel"
       :supportedTypesSettings="supportedTypesSettings"
       @next="openFilename"
+      @finish="finish"
       @onClose="close"
     />
     <Step
@@ -34,9 +35,9 @@
 </template>
 <style lang="scss" src="./Modal.scss" />
 <script lang="ts">
-import { defineComponent, nextTick, onMounted, ref, watch } from 'vue';
+import { defineComponent, onMounted, PropType, ref, watch } from 'vue';
 import { Steps, Preview, Filename, Info } from './steps';
-import { IDocument } from '@/models/document.model';
+import { IDataFinish, IDocument, IPartyDefault } from '@/models/document.model';
 import Icon from '@/widgets/Icon/Icon.vue';
 
 export default defineComponent({
@@ -63,6 +64,10 @@ export default defineComponent({
     maxSizeSettings: {
       type: String,
       required: true,
+    },
+    parties: {
+      type: Array as PropType<Array<IPartyDefault>>,
+      required: false,
     },
   },
   setup(props, { emit }) {
@@ -101,6 +106,9 @@ export default defineComponent({
       modalIsOpen.value = false;
       emit('onClose');
     };
+    const finish = (data: IDataFinish) => {
+      emit('onFinish', data);
+    };
 
     onMounted(function () {
       watch(
@@ -126,6 +134,7 @@ export default defineComponent({
       openDocumentRef,
       openInfo,
       close,
+      finish,
       PreviewStep: Preview,
       FilenameStep: Filename,
       InfoStep: Info,

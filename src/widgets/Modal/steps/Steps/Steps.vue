@@ -47,6 +47,7 @@
             <component
               v-bind:is="step"
               @next="next"
+              @finish="finish"
               @close="close"
               :file="document"
               :maxSizeLabel="maxSizeLabel"
@@ -62,7 +63,7 @@
 </template>
 <style lang="scss" src="./Steps.scss" />
 <script lang="ts">
-import { IDocument } from '@/models/document.model';
+import { IDataFinish, IDocument } from '@/models/document.model';
 import { defineComponent, nextTick, ref } from 'vue';
 import Close from 'vue-material-design-icons/Close.vue';
 import Icon from '@/widgets/Icon/Icon.vue';
@@ -127,7 +128,17 @@ export default defineComponent({
         }, 400);
       });
     };
-    return { isOpen, outAnimate, document, open, close, next, Close };
+    const finish = (data: IDataFinish) => {
+      nextTick(() => {
+        outAnimate.value = true;
+        setTimeout(() => {
+          isOpen.value = false;
+          outAnimate.value = false;
+          emit('finish', data);
+        }, 400);
+      });
+    };
+    return { isOpen, outAnimate, document, open, close, next, finish, Close };
   },
 });
 </script>

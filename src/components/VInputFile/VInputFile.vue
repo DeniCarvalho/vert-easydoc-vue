@@ -82,6 +82,7 @@
       :maxSizeSettings="configComponent.settings.maxSize"
       :supportedTypesLabel="configComponent.labels.supportedTypes"
       :supportedTypesSettings="configComponent.settings.supportedTypes"
+      @onFinish="onFinish"
     />
   </div>
 </template>
@@ -100,7 +101,12 @@ import { Modal } from '../../widgets';
 import { Small, Medium, Large } from './responsive';
 import { Uploading, Done } from './states';
 import { IPage, PageModel } from '@/models/page.model';
-import { DocumentModel, IDocument } from '@/models/document.model';
+import {
+  DocumentModel,
+  IDataFinish,
+  IDocument,
+  IPartyDefault,
+} from '@/models/document.model';
 import { SizeEnum } from '@/enums/size.enum';
 import { useColor } from '@/composables/useColor';
 
@@ -144,6 +150,10 @@ export default defineComponent({
       type: String as PropType<SizeEnum>,
       default: SizeEnum.Medium,
     },
+    parties: {
+      type: Array as PropType<Array<IPartyDefault>>,
+      required: false,
+    },
   },
   setup(props, { emit }) {
     const { parseColor, formatColor } = useColor();
@@ -177,6 +187,7 @@ export default defineComponent({
         ...props.colors,
       },
       size: props.size,
+      parties: props.parties,
     });
 
     const uniqueId = ref<string>('');
@@ -299,6 +310,10 @@ export default defineComponent({
       else uniqueId.value = `ved-select-file-input-${Math.random()}`;
     };
 
+    const onFinish = (data: IDataFinish) => {
+      console.log({ data });
+    };
+
     const events = ['dragenter', 'dragover', 'dragleave', 'drop'];
     onMounted(function () {
       generatorId();
@@ -376,6 +391,7 @@ export default defineComponent({
       openInfo,
       uploadCancel,
       removeFile,
+      onFinish,
     };
   },
 });
