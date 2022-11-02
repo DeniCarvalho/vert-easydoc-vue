@@ -128,10 +128,14 @@
       class="modal-box-sign-ved ved-flex ved-flex-col ved-justify-start ved-items-start ved-w-full"
     >
       <div class="ved-font-semibold ved-text-black ved-font-base">
-        Parte assinante
+        Signatários
       </div>
       <div class="ved-font-thin ved-text-gray-400 ved-text-xs">
-        Dados de uma das partes que assinará o documento
+        {{
+          formSign.id
+            ? 'Atualize os dados do signatário'
+            : 'Adicione um novo signatário'
+        }}
       </div>
       <form
         class="ved-w-full ved-mt-5 ved-flex ved-flex-col ved-justify-start ved-items-start"
@@ -144,7 +148,7 @@
               name="name"
               id="name"
               placeholder="&nbsp;"
-              v-model="formSign.name"
+              v-model.trim="formSign.name"
               autocomplete="off"
               required
             />
@@ -159,7 +163,7 @@
               type="email"
               id="email"
               placeholder="&nbsp;"
-              v-model="formSign.email"
+              v-model.trim="formSign.email"
               autocomplete="off"
               required
             />
@@ -243,6 +247,8 @@ import {
   IModalSign,
   IDataFinish,
   IPartyDefault,
+  ISigners,
+  ISignHereTab,
 } from '@/models/document.model';
 import Icon from '@/widgets/Icon/Icon.vue';
 import Sign from './components/Sign/Sign.vue';
@@ -563,7 +569,10 @@ export default defineComponent({
     const finish = () => {
       // Check fields signatures
       let isValid = true;
-      signatures.value.forEach((sign) => {
+      // Copy signatures to new array
+      const signaturesCopy = JSON.parse(JSON.stringify(signatures.value));
+
+      signaturesCopy.forEach((sign: IDataSign) => {
         if (
           !sign.name ||
           !sign.email ||
@@ -573,11 +582,34 @@ export default defineComponent({
         ) {
           isValid = false;
         }
+        sign.yPosition -= 8;
+      });
+
+      const signers: ISigners[] = [];
+      signaturesCopy.forEach((sign: IDataSign) => {
+        const obj: ISignHereTab = {
+          page: sign.page,
+          xPosition: sign.xPosition,
+          yPosition: sign.yPosition,
+        };
+        //Check exist by name and email
+        const idx = signers.findIndex(
+          (s) => s.name === sign.name && s.email === sign.email
+        );
+        if (idx >= 0) {
+          signers[idx].signHereTabs.push(obj);
+        } else {
+          signers.push({
+            name: sign.name,
+            email: sign.email,
+            signHereTabs: [obj],
+          });
+        }
       });
 
       if (isValid) {
         emit('finish', {
-          signatures: signatures.value,
+          signers: signers,
           name: docName.value,
           file: doc.value.file,
         } as IDataFinish);
@@ -626,7 +658,7 @@ export default defineComponent({
         element?.addEventListener('mousemove', function (e: any) {
           cursor.value?.setAttribute(
             'style',
-            'top: ' + (e.pageY - 10) + 'px; left: ' + (e.pageX - 5) + 'px;'
+            'top: ' + (e.pageY - 10) + 'px; left: ' + (e.pageX - 10) + 'px;'
           );
         });
       }

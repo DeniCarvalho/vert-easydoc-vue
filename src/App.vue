@@ -14,7 +14,9 @@
       :settings="config.settings"
       :colors="config.colors"
       :fileLink="urlFileSmall"
-      @success="successSmall"
+      :loading="loadingSmall"
+      :fileName="fileNameSmall"
+      @send="sendSmall"
       @remove="urlFileSmall = ''"
     />
     <div class="ved-w-full ved-my-4 ved-mt-10">
@@ -26,7 +28,9 @@
       :settings="config.settings"
       :colors="config.colors"
       :fileLink="urlFileMedium"
-      @success="successMedium"
+      :loading="loadingMedium"
+      :fileName="fileNameMedium"
+      @send="sendMedium"
       @remove="urlFileMedium = ''"
     />
 
@@ -41,7 +45,9 @@
       :settings="config.settings"
       :colors="config.colors"
       :fileLink="urlFileLarge"
-      @success="successLarge"
+      :loading="loadingLarge"
+      :fileName="fileNameLarge"
+      @send="sendLarge"
       @remove="urlFileLarge = ''"
     />
   </div>
@@ -51,6 +57,7 @@
 import { defineComponent, reactive, ref } from 'vue';
 import { VInputFile } from '@/components';
 import { SizeEnum } from '@/enums/size.enum';
+import { url } from 'inspector';
 export default defineComponent({
   name: 'App',
   components: {
@@ -73,29 +80,144 @@ export default defineComponent({
       },
     });
 
+    const loadingSmall = ref(false);
     const urlFileSmall = ref<string>('');
+    const fileNameSmall = ref<string>('');
+
+    const loadingMedium = ref(false);
+    const fileNameMedium = ref<string>('');
     const urlFileMedium = ref<string>('');
+
+    const loadingLarge = ref(false);
+    const fileNameLarge = ref<string>('');
     const urlFileLarge = ref<string>('');
 
-    const successSmall = (data: string) => {
-      urlFileSmall.value = data;
+    const request = ref<XMLHttpRequest>(new XMLHttpRequest());
+
+    const sendSmall = (data: any) => {
+      loadingSmall.value = true;
+      sendRequest(
+        data,
+        (res: any) => {
+          console.log(res);
+          fileNameSmall.value = data.name;
+          urlFileSmall.value =
+            'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+          loadingSmall.value = false;
+        },
+        (error: any) => {
+          loadingSmall.value = false;
+          console.log(error);
+        }
+      );
     };
-    const successMedium = (data: string) => {
-      urlFileSmall.value = data;
+    const sendMedium = (data: any) => {
+      loadingMedium.value = true;
+      sendRequest(
+        data,
+        (res: any) => {
+          console.log(res);
+          fileNameMedium.value = data.name;
+          urlFileMedium.value =
+            'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+          loadingMedium.value = false;
+        },
+        (error: any) => {
+          loadingMedium.value = false;
+          console.log(error);
+        }
+      );
     };
-    const successLarge = (data: string) => {
-      urlFileSmall.value = data;
+    const sendLarge = (data: any) => {
+      loadingLarge.value = true;
+      sendRequest(
+        data,
+        (res: any) => {
+          console.log(res);
+          fileNameLarge.value = data.name;
+          urlFileLarge.value =
+            'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+          loadingLarge.value = false;
+        },
+        (error: any) => {
+          loadingLarge.value = false;
+          console.log(error);
+        }
+      );
+    };
+
+    const sendRequest = (data: any, callback: any, error?: any) => {
+      request.value = new XMLHttpRequest();
+
+      request.value.addEventListener('load', function () {
+        if (request.value.status == 200) {
+          const data = JSON.parse(request.value.response);
+          callback(data);
+        } else {
+          error(request.value);
+        }
+      });
+
+      request.value.open('POST', 'http://localhost:8080/envelope');
+
+      const documentId = '1';
+      const signers = [];
+      for (let index = 0; index < data.signers.length; index++) {
+        const sign = data.signers[index];
+        const recipientId = (index + 1).toString();
+        const clientUserId = new Date().getTime().toString();
+        signers.push({
+          name: sign.name,
+          email: sign.email,
+          recipientId: recipientId,
+          clientUserId: clientUserId,
+          tabs: {
+            signHereTabs: sign.signHereTabs.map((tab: any) => {
+              return {
+                documentId: documentId,
+                pageNumber: tab.page.toString(),
+                xPosition: tab.xPosition.toString(),
+                yPosition: tab.yPosition.toString(),
+                recipientId: recipientId,
+                tabLabel: 'SignHereTab',
+              };
+            }),
+          },
+        });
+      }
+
+      const payload = {
+        documents: [
+          {
+            name: data.name,
+            documentBase64: data.file,
+            documentId: documentId,
+          },
+        ],
+        emailSubject: 'Contrato LIFT',
+        recipients: {
+          signers: signers,
+        },
+        type: data.type,
+      };
+      request.value.send(JSON.stringify(payload));
     };
 
     return {
       config,
       SizeEnum,
+      loadingSmall,
       urlFileSmall,
+      fileNameSmall,
       urlFileMedium,
+      loadingMedium,
+      fileNameMedium,
       urlFileLarge,
-      successSmall,
-      successMedium,
-      successLarge,
+      loadingLarge,
+      fileNameLarge,
+      sendSmall,
+      sendMedium,
+      sendLarge,
     };
   },
 });

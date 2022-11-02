@@ -1,7 +1,7 @@
 <template>
   <div id="input-file-ved" ref="inputFileVed" class="ved-w-full ved-relative">
     <label
-      v-if="!fileLink && uploadProgress === undefined"
+      v-if="!fileLinkParent && uploadProgress === undefined && !loading"
       @drop.prevent="onDrop"
       :for="uniqueId"
       ref="labelFileRef"
@@ -50,7 +50,6 @@
       />
     </label>
     <input
-      v-if="!fileLink"
       ref="fileRef"
       hidden
       :id="uniqueId"
@@ -60,16 +59,21 @@
     />
 
     <Done
-      v-if="fileLink"
-      :link="fileLink"
-      :filename="file?.name"
+      v-if="fileLinkParent && !loading"
+      :link="fileLinkParent"
+      :filename="
+        fileName || (file?.name && file?.name != '' ? file?.name : 'Arquivo')
+      "
       @remove="removeFile"
     />
 
+    <Saving v-if="loading" />
+
     <Uploading
       :class="{
-        'ved-block': !fileLink && uploadProgress !== undefined,
-        'ved-hidden': fileLink || uploadProgress === undefined,
+        'ved-block':
+          !fileLinkParent && uploadProgress !== undefined && !loading,
+        'ved-hidden': fileLinkParent || uploadProgress === undefined,
       }"
       :uploadProgress="uploadProgress"
       @cancel="uploadCancel"
@@ -99,7 +103,7 @@ import {
 
 import { Modal } from '../../widgets';
 import { Small, Medium, Large } from './responsive';
-import { Uploading, Done } from './states';
+import { Uploading, Done, Saving } from './states';
 import { IPage, PageModel } from '@/models/page.model';
 import {
   DocumentModel,
@@ -112,7 +116,7 @@ import { useColor } from '@/composables/useColor';
 
 export default defineComponent({
   name: 'VSInput',
-  components: { Small, Medium, Large, Uploading, Done, Modal },
+  components: { Small, Medium, Large, Uploading, Done, Modal, Saving },
   props: {
     fileLink: {
       type: String,
@@ -152,6 +156,10 @@ export default defineComponent({
     },
     parties: {
       type: Array as PropType<Array<IPartyDefault>>,
+      required: false,
+    },
+    loading: {
+      type: Boolean,
       required: false,
     },
   },
@@ -200,6 +208,7 @@ export default defineComponent({
 
     const documentFile = ref<File>();
     const file = ref<IDocument>();
+    const fileLinkParent = ref<string | undefined>(props.fileLink);
     const uploadProgress = ref<number>();
 
     const request = ref<XMLHttpRequest>(new XMLHttpRequest());
@@ -210,6 +219,7 @@ export default defineComponent({
 
     const onFile = async (_file: File) => {
       try {
+        fileRef.value.value = null;
         const blob = _file.slice(0, _file.size, _file.type);
         const extension = _file.name.split('.').pop();
         const name = _file.name.split('.').shift();
@@ -217,12 +227,10 @@ export default defineComponent({
         documentFile.value = new File([blob], `${name}.${extension}`, {
           type: _file.type,
         });
-
         const formData = new FormData();
         formData.append('file', documentFile.value);
 
         request.value = new XMLHttpRequest();
-
         request.value.upload.onprogress = (e) => {
           uploadProgress.value = 0;
           if (e.lengthComputable) {
@@ -245,12 +253,6 @@ export default defineComponent({
                 file: data.file || '',
               });
 
-              // emit(
-              //   'success',
-              //   'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-              // );
-
-              fileRef.value.value = '';
               modalRef.value?.openDocumentRef();
             }
           } else {
@@ -261,7 +263,6 @@ export default defineComponent({
             } else throw new Error('Error');
           }
         });
-
         request.value.open('POST', configComponent.value.settings.endpoint);
         request.value.send(formData);
       } catch (error) {
@@ -272,14 +273,14 @@ export default defineComponent({
     const uploadCancel = () => {
       request.value.abort();
       uploadProgress.value = undefined;
-      fileRef.value.value = '';
       documentFile.value = undefined;
     };
 
     const removeFile = () => {
       file.value = undefined;
       documentFile.value = undefined;
-      fileRef.value.value = '';
+      fileLinkParent.value = undefined;
+
       emit('remove');
     };
 
@@ -311,7 +312,7 @@ export default defineComponent({
     };
 
     const onFinish = (data: IDataFinish) => {
-      console.log({ data });
+      emit('send', data);
     };
 
     const events = ['dragenter', 'dragover', 'dragleave', 'drop'];
@@ -368,6 +369,15 @@ export default defineComponent({
       );
     });
 
+    watch(
+      () => props.fileLink,
+      (value) => {
+        if (value) {
+          fileLinkParent.value = value as string | undefined;
+        }
+      }
+    );
+
     onUnmounted(() => {
       events.forEach((eventName) => {
         const _document = document as any;
@@ -384,6 +394,7 @@ export default defineComponent({
       modalRef,
       isHover,
       file,
+      fileLinkParent,
       uploadProgress,
       onFileChange,
       onDrop,

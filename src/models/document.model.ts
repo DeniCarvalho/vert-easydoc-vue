@@ -52,9 +52,21 @@ export interface IDataSign {
 }
 
 export interface IDataFinish {
-  signatures: IDataSign[];
+  signers: ISigners[];
   name: string;
   file: string;
+}
+
+export interface ISigners {
+  name: string;
+  email: string;
+  signHereTabs: ISignHereTab[];
+}
+
+export interface ISignHereTab {
+  page: number;
+  xPosition: number;
+  yPosition: number;
 }
 
 export interface IPartyDefault {

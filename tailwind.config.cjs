@@ -13,6 +13,7 @@ module.exports = {
         error: '#f07363',
         warning: '#fcd250',
         success: '#92c65e',
+        info: 'var(--info-color-ved)',
         fontLight: '#a1a1a4',
         disabledPure: 'var(--default-color-ved)',
       },
