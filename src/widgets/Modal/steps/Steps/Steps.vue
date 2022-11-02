@@ -54,6 +54,7 @@
               :maxSizeSettings="maxSizeSettings"
               :supportedTypesLabel="supportedTypesLabel"
               :supportedTypesSettings="supportedTypesSettings"
+              :parties="parties"
             ></component>
           </div>
         </div>
@@ -63,8 +64,8 @@
 </template>
 <style lang="scss" src="./Steps.scss" />
 <script lang="ts">
-import { IDataFinish, IDocument } from '@/models/document.model';
-import { defineComponent, nextTick, ref } from 'vue';
+import { IDataFinish, IDocument, IPartyDefault } from '@/models/document.model';
+import { defineComponent, nextTick, PropType, ref } from 'vue';
 import Close from 'vue-material-design-icons/Close.vue';
 import Icon from '@/widgets/Icon/Icon.vue';
 export default defineComponent({
@@ -90,6 +91,10 @@ export default defineComponent({
     maxSizeSettings: {
       type: String,
       required: true,
+    },
+    parties: {
+      type: Array as PropType<Array<IPartyDefault>>,
+      required: false,
     },
   },
   setup(props, { emit }) {

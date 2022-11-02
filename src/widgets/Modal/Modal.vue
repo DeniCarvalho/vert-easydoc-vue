@@ -9,6 +9,7 @@
       :maxSizeSettings="maxSizeSettings"
       :supportedTypesLabel="supportedTypesLabel"
       :supportedTypesSettings="supportedTypesSettings"
+      :parties="parties"
       @next="openFilename"
       @finish="finish"
       @onClose="close"

@@ -137,7 +137,32 @@
             : 'Adicione um novo signatário'
         }}
       </div>
+      <div class="ved-w-full ved-h-auto ved-flex ved-justify-center ved-mt-5">
+        <button
+          type="button"
+          @click="formTab = 0"
+          :class="{
+            'ved-shadow-lg ved-bg-sky-600 ved-text-white': formTab == 0,
+            'ved-text-black': formTab != 0,
+          }"
+          class="ved-px-2 ved-py-1.5 ved-rounded ved-outline-none ved-transform active:ved-scale-x-75 ved-transition-transform ved-flex ved-justify-center ved-items-center ved-border-0 ved-cursor-pointer ved-w-auto"
+        >
+          <div class="">Novo</div>
+        </button>
+        <button
+          type="button"
+          @click="formTab = 1"
+          :class="{
+            'ved-shadow-lg ved-bg-sky-600 ved-text-white': formTab == 1,
+            'ved-text-black': formTab != 1,
+          }"
+          class="ved-ml-2 ved-px-2 ved-py-1.5 ved-rounded ved-outline-none ved-transform active:ved-scale-x-75 ved-transition-transform ved-flex ved-justify-center ved-items-center ved-border-0 ved-cursor-pointer ved-w-auto"
+        >
+          <div class="">Escolher existentes</div>
+        </button>
+      </div>
       <form
+        v-if="formTab == 0"
         class="ved-w-full ved-mt-5 ved-flex ved-flex-col ved-justify-start ved-items-start"
         @submit.prevent="addSign"
       >
@@ -202,6 +227,75 @@
           </div>
         </div>
       </form>
+      <div
+        v-else
+        id="signs-list-ved"
+        class="ved-w-full ved-h-40 ved-overflow-y-auto ved-overflow-x-hidden"
+      >
+        <div
+          v-if="!partiesDefault || partiesDefault.length == 0"
+          class="ved-w-full ved-h-full ved-flex ved-flex-col ved-justify-center ved-items-center"
+        >
+          <p class="ved-text-black ved-text-sm">Nenhum signatário encontrado</p>
+        </div>
+        <div
+          v-else
+          class="ved-w-auto ved-h-auto ved-z-50 ved-flex ved-flex-col ved-justify-start ved-items-start"
+        >
+          <div class="list-signers-ved ved-z-10 ved-absolute">
+            <ul class="ul-ved">
+              <li v-for="(party, i) in partiesDefault" :key="i">
+                <input
+                  type="checkbox"
+                  :id="'party-sign-exist-' + i"
+                  :name="'party-sign-exist-' + i"
+                />
+                <label
+                  :for="'party-sign-exist-' + i"
+                  class="text"
+                  @click="selectSign(party)"
+                >
+                  <div class="ved-w-auto ved-flex ved-justify-start">
+                    {{ party.name }}
+                  </div>
+                  <div
+                    class="ved-text-xs ved-w-auto ved-flex ved-justify-start"
+                  >
+                    {{ party.email }}
+                  </div>
+                </label>
+                <label
+                  :for="'party-sign-exist-' + i"
+                  class="button"
+                  @click="selectSign(party)"
+                ></label>
+                <div class="wrapper">
+                  <svg
+                    version="1.1"
+                    id="Layer_1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    x="0px"
+                    y="0px"
+                    viewBox="0 0 98.5 98.5"
+                    enable-background="new 0 0 98.5 98.5"
+                    xml:space="preserve"
+                  >
+                    <path
+                      class="checkmark-ved"
+                      fill="none"
+                      stroke-width="8"
+                      stroke-miterlimit="10"
+                      d="M81.7,17.8C73.5,9.3,62,4,49.2,4
+	C24.3,4,4,24.3,4,49.2s20.3,45.2,45.2,45.2s45.2-20.3,45.2-45.2c0-8.6-2.4-16.6-6.5-23.4l0,0L45.6,68.2L24.7,47.3"
+                    />
+                  </svg>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div
@@ -293,6 +387,8 @@ export default defineComponent({
       yPosition: 0,
     });
     const heightWindow = ref<number>(0);
+    const formTab = ref(0);
+    const partiesDefault = ref<Array<IPartyDefault>>(props.parties || []);
 
     const next = () => {
       emit('next');
@@ -431,6 +527,7 @@ export default defineComponent({
     };
 
     const openAddSign = (id?: number) => {
+      formTab.value = 0;
       if (id) {
         const sign = signatures.value.find((s) => s.id === id);
         if (sign) {
@@ -464,6 +561,14 @@ export default defineComponent({
       setTimeout(() => {
         cursor.value?.classList.remove('cursor-zone-ved__expand');
       }, 500);
+    };
+
+    const selectSign = (sign: IPartyDefault) => {
+      formSign.value.name = sign.name;
+      formSign.value.email = sign.email;
+      setTimeout(() => {
+        addSign();
+      }, 800);
     };
 
     const addSign = () => {
@@ -516,6 +621,17 @@ export default defineComponent({
           pageModal?.classList.remove('active-modal-sign');
         }
       }
+
+      const idx = partiesDefault.value.findIndex(
+        (s) =>
+          s.name === formSign.value.name && s.email === formSign.value.email
+      );
+      if (idx < 0) {
+        partiesDefault.value?.push({
+          name: formSign.value.name,
+          email: formSign.value.email,
+        });
+      }
     };
 
     const setPageAddSign = (id: number) => {
@@ -536,6 +652,7 @@ export default defineComponent({
               pageModal?.classList.remove('active-modal-sign');
               if (modalSign.value?.div) {
                 modalSign.value.div.style.display = 'block';
+
                 return;
               }
             }
@@ -739,6 +856,8 @@ export default defineComponent({
       formSign,
       heightWindow,
       signatures,
+      formTab,
+      partiesDefault,
       next,
       close,
       onInputName,
@@ -754,6 +873,7 @@ export default defineComponent({
       keyupHandler,
       openAddSign,
       addSign,
+      selectSign,
       cancelSign,
       removeSign,
       finish,

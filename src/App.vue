@@ -16,6 +16,7 @@
       :fileLink="urlFileSmall"
       :loading="loadingSmall"
       :fileName="fileNameSmall"
+      :parties="[{ name: 'Denisson Silva', email: 'denii@gmail.com' }]"
       @send="sendSmall"
       @remove="urlFileSmall = ''"
     />

@@ -282,4 +282,150 @@
       transform: translate(-50%, -50%) scale(1);
     }
   }
+
+  .list-signers-ved {
+    position: relative;
+    width: 100%;
+  }
+
+  .list-signers-ved .head {
+    padding: 20px 0;
+    margin: 0 30px;
+    border-bottom: 1px solid rgba(2, 132, 199, 0.5);
+  }
+
+  .list-signers-ved .title {
+    font-family: 'fredericka the great', cursive;
+    font-weight: 500;
+    text-align: center;
+    font-size: 2.5rem;
+    color: rgba(2, 132, 199, 0.8);
+  }
+
+  .list-signers-ved .subtitle {
+    font-size: 0.9rem;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  .list-signers-ved .ul-ved {
+    list-style: none;
+    padding: 4px 0;
+    font-weight: 300;
+    margin-right: 10px;
+  }
+
+  .list-signers-ved .ul-ved li {
+    position: relative;
+    display: block;
+    margin: 24px 0;
+    height: 14px;
+    padding-bottom: 15px;
+  }
+
+  .list-signers-ved .ul-ved .text {
+    float: left;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .ul-ved li:nth-of-type(2) {
+    animation: slide-up 1s;
+  }
+
+  .ul-ved li:nth-of-type(3) {
+    animation: slide-up 1.5s;
+  }
+
+  .ul-ved li:nth-of-type(4) {
+    animation: slide-up 2s;
+  }
+
+  @keyframes slide-up {
+    0% {
+      opacity: 0;
+      transform: translateY(5rem);
+    }
+  }
+
+  .list-signers-ved .ul-ved .button {
+    position: relative;
+    z-index: 2;
+    box-sizing: border-box;
+    float: right;
+    width: 20px;
+    height: 20px;
+    border: 1px solid fade-out(rgb(2, 132, 199), 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .list-signers-ved .ul-ved .checkmark-ved {
+    position: absolute;
+    stroke: rgba(2, 132, 199, 0.5);
+    fill: none;
+    stroke-dashoffset: 340;
+    stroke-dasharray: 360;
+  }
+
+  .list-signers-ved .ul-ved input {
+    display: none;
+  }
+
+  .ul-ved li .wrapper {
+    position: absolute;
+    width: 20px;
+    right: 0;
+  }
+
+  .list-signers-ved .ul-ved input:checked ~ {
+    .text {
+      color: rgba(2, 132, 199, 0.5);
+    }
+    .wrapper .checkmark-ved {
+      animation: dash-signers-ved 0.5s ease-out forwards;
+      opacity: 1;
+    }
+    .button {
+      opacity: 0;
+    }
+  }
+
+  .checkmark-ved {
+    display: block;
+    stroke-width: 8;
+    opacity: 0;
+  }
+
+  @keyframes dash-signers-ved {
+    0% {
+      stroke-dashoffset: 340;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  #signs-list-ved::-webkit-scrollbar {
+    background-color: #fff;
+    width: 16px;
+  }
+
+  /* background of the scrollbar except button or resizer */
+  #signs-list-ved::-webkit-scrollbar-track {
+    background-color: #fff;
+  }
+
+  /* scrollbar itself */
+  #signs-list-ved::-webkit-scrollbar-thumb {
+    background-color: #babac0;
+    border-radius: 16px;
+    border: 4px solid #fff;
+  }
+
+  /* set button(top and bottom of the scrollbar) */
+  #signs-list-ved::-webkit-scrollbar-button {
+    display: none;
+  }
 }

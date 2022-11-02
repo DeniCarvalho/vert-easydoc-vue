@@ -86,6 +86,7 @@
       :maxSizeSettings="configComponent.settings.maxSize"
       :supportedTypesLabel="configComponent.labels.supportedTypes"
       :supportedTypesSettings="configComponent.settings.supportedTypes"
+      :parties="parties"
       @onFinish="onFinish"
     />
   </div>
