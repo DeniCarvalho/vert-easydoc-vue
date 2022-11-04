@@ -8,8 +8,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/components/index.ts'),
-      name: 'vert-easydoc-vue',
-      fileName: (format) => `vert-easydoc-vue.${format}.js`,
+      name: 'vert-sign-vue',
+      fileName: (format) => `vert-sign-vue.${format}.js`,
     },
     rollupOptions: {
       external: ['vue'],

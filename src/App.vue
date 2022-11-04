@@ -16,7 +16,16 @@
       :fileLink="urlFileSmall"
       :loading="loadingSmall"
       :fileName="fileNameSmall"
-      :parties="[{ name: 'Denisson Silva', email: 'denii@gmail.com' }]"
+      :parties="[
+        {
+          name: 'Denisson dos Santos Carvalgo da Silva',
+          email: 'denii@gmail.com',
+        },
+        {
+          name: 'Caroline',
+          email: 'carol@gmail.com',
+        },
+      ]"
       @send="sendSmall"
       @remove="urlFileSmall = ''"
     />
@@ -159,7 +168,7 @@ export default defineComponent({
         }
       });
 
-      request.value.open('POST', 'http://localhost:8080/envelope');
+      request.value.open('POST', 'http://localhost:9001/envelope');
 
       const documentId = '1';
       const signers = [];

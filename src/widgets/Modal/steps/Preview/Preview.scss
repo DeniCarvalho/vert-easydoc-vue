@@ -6,8 +6,7 @@
     background-color: rgb(50 54 57) !important;
     box-shadow: 0 -2px 8px rgb(0 0 0 / 9%), 0 4px 8px rgb(0 0 0 / 6%),
       0 1px 2px rgb(0 0 0 / 30%), 0 2px 6px rgb(0 0 0 / 15%) !important;
-    z-index: 999999;
-    // position: relative !important;
+    z-index: 999999 !important;
   }
   .menu-ved {
     background-color: rgb(50, 54, 57) !important;
@@ -20,16 +19,14 @@
   }
 
   .ved-page-item-list {
-    -webkit-app-region: no-drag;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -o-user-select: none;
-    user-select: none;
+    -webkit-app-region: no-drag !important;
+    -webkit-user-select: none !important;
+    -khtml-user-select: none !important;
+    -moz-user-select: none !important;
+    -o-user-select: none !important;
+    user-select: none !important;
     .ved-img-page-large {
-      // height: 1000px !important;
-      // cursor: url('@/assets/vue.svg'), auto;
-      cursor: pointer;
+      cursor: pointer !important;
     }
     .ved-img-page-small {
       height: 170px !important;
@@ -48,286 +45,229 @@
     }
 
     .chip-ved {
-      padding: 5px 8px 5px 8px;
-      height: auto;
-      min-width: 110px;
-      max-width: 130px;
-      text-align: left;
-      border-radius: 5px;
-      border: solid 1px #969696;
-      background: rgb(251, 222, 19);
+      padding: 5px 8px 5px 8px !important;
+      height: auto !important;
+      min-width: 110px !important;
+      max-width: 130px !important;
+      text-align: left !important;
+      border-radius: 5px !important;
+      border: solid 1px #969696 !important;
+      background: rgb(251, 222, 19) !important;
+      color: black;
       background: radial-gradient(
         circle,
         rgba(251, 222, 19, 1) 0%,
         rgba(237, 213, 40, 1) 100%
-      );
-      -webkit-app-region: no-drag;
+      ) !important;
+      -webkit-app-region: no-drag !important;
       &:hover {
         background: rgb(251, 222, 19) !important;
       }
       .name {
-        font-size: 15px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        font-size: 15px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
       }
       .email {
-        font-size: 10px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        font-size: 10px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
       }
     }
   }
   .cursor-zone-ved {
-    position: absolute;
-    z-index: 999980;
+    position: absolute !important;
+    z-index: 999980 !important;
 
     .mark-ved {
-      position: absolute;
-      z-index: 999980;
-      bottom: -10px;
-      left: 10px;
-      width: 100px;
-      height: 40px;
-      border: 2px dashed rgba(255, 0, 0, 0.247);
-      border-radius: 5px;
-      background-color: transparent;
+      position: absolute !important;
+      z-index: 999980 !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      width: 100px !important;
+      height: 40px !important;
+      border: 2px dashed rgba(255, 0, 0, 0.247) !important;
+      border-radius: 5px !important;
+      background-color: transparent !important;
       animation: none !important;
-    }
-    .cursor-page-ved {
-      width: 20px;
-      height: 20px;
-      position: absolute;
-      z-index: 999980;
-      border: 1px solid rgba(255, 0, 0, 0.247);
-      border-radius: 50%;
-      animation: cursorPageVedAnim 0.5s infinite alternate;
-      pointer-events: none;
-    }
 
-    .cursor-page-ved::after {
-      content: '';
-      width: 20px;
-      height: 20px;
-      position: absolute;
-      z-index: 999980;
-      border: 8px solid red;
-      border-radius: 50%;
-      opacity: 0.5;
-      top: -8px;
-      left: -8px;
-      animation: cursorPageVedAnim2 0.5s infinite alternate;
-    }
-  }
-
-  @keyframes cursorPageVedAnim {
-    from {
-      transform: scale(1);
-    }
-    to {
-      transform: scale(0.7);
-    }
-  }
-
-  @keyframes cursorPageVedAnim2 {
-    from {
-      transform: scale(1);
-    }
-    to {
-      transform: scale(0.4);
-    }
-  }
-
-  @keyframes cursorPageVedAnim3 {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(3);
-    }
-    100% {
-      transform: scale(1);
-      opacity: 0;
-    }
-  }
-
-  .cursor-zone-ved__expand {
-    .cursor-page-ved {
-      animation: cursorPageVedAnim3 0.5s forwards;
-      border: 1px solid red;
+      .mark-icon-ved {
+        color: rgba(255, 0, 0, 0.247) !important;
+      }
     }
   }
 
   //Modal add sign
   .modal-box-sign-ved {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1) !important;
   }
 
   .overlay-modal-ved {
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    background: rgb(0 0 0 / 30%);
-    opacity: 0;
-    pointer-events: none;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 0;
+    position: fixed !important;
+    height: 100% !important;
+    width: 100% !important;
+    background: rgb(0 0 0 / 30%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    z-index: 0 !important;
   }
   &.active-modal-sign {
     .overlay-modal-ved {
-      opacity: 1;
-      pointer-events: auto;
-      z-index: 999997;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      z-index: 999997 !important;
     }
   }
   .modal-box-sign-ved {
-    max-width: 380px;
-    width: 100%;
-    padding: 30px 20px;
-    border-radius: 15px;
-    background-color: #fff;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.1s ease;
-    transform: translate(-50%, -50%) scale(1.2);
-    z-index: 999998;
+    max-width: 380px !important;
+    width: 100% !important;
+    padding: 30px 20px !important;
+    border-radius: 15px !important;
+    background-color: #fff !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: all 0.1s ease !important;
+    transform: translate(-50%, -50%) scale(1.2) !important;
+    z-index: 999998 !important;
 
     .inp {
-      position: relative;
-      margin: auto;
-      width: 100%;
-      border-radius: 3px;
-      overflow: hidden;
+      position: relative !important;
+      margin: auto !important;
+      width: 100% !important;
+      border-radius: 3px !important;
+      overflow: hidden !important;
     }
     .inp .label {
-      position: absolute;
-      top: 10px;
-      left: 12px;
-      font-size: 16px;
-      color: rgba(0, 0, 0, 0.5);
-      font-weight: 500;
-      transform-origin: 0 0;
-      transform: translate3d(0, 0, 0);
-      transition: all 0.2s ease;
-      pointer-events: none;
+      position: absolute !important;
+      top: 10px !important;
+      left: 12px !important;
+      font-size: 16px !important;
+      color: rgba(0, 0, 0, 0.5) !important;
+      font-weight: 500 !important;
+      transform-origin: 0 0 !important;
+      transform: translate3d(0, 0, 0) !important;
+      transition: all 0.2s ease !important;
+      pointer-events: none !important;
     }
     .inp .focus-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.05);
-      z-index: -1;
-      transform: scaleX(0);
-      transform-origin: left;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      z-index: -1 !important;
+      transform: scaleX(0) !important;
+      transform-origin: left !important;
     }
     .inp input {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      width: 100%;
-      border: 0;
-      font-family: inherit;
-      padding: 12px 12px 0 12px;
-      height: 30px;
-      font-size: 12px;
-      font-weight: 400;
-      background: rgba(0, 0, 0, 0.02);
-      box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3);
-      color: #000;
-      transition: all 0.15s ease;
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      appearance: none !important;
+      width: 95% !important;
+      border: 0 !important;
+      font-family: inherit !important;
+      padding-top: 12px !important;
+      padding-left: 12px !important;
+      height: 30px !important;
+      font-size: 12px !important;
+      font-weight: 400 !important;
+      background: rgba(0, 0, 0, 0.02) !important;
+      box-shadow: inset 0 -2px 0 -1px rgb(0 0 0 / 30%) !important;
+      color: #000 !important;
+      transition: all 0.15s ease !important;
     }
     .inp input:hover {
-      background: rgba(0, 0, 0, 0.04);
-      box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.04) !important;
+      box-shadow: inset 0 -2px 0 -1px rgb(0 0 0 / 30%) !important;
     }
     .inp input:not(:-moz-placeholder-shown) + .label {
-      color: rgba(0, 0, 0, 0.5);
-      transform: translate3d(0, -8px, 0) scale(0.7);
+      color: rgba(0, 0, 0, 0.5) !important;
+      transform: translate3d(0, -8px, 0) scale(0.7) !important;
     }
     .inp input:not(:-ms-input-placeholder) + .label {
-      color: rgba(0, 0, 0, 0.5);
-      transform: translate3d(0, -8px, 0) scale(0.7);
+      color: rgba(0, 0, 0, 0.5) !important;
+      transform: translate3d(0, -8px, 0) scale(0.7) !important;
     }
     .inp input:not(:placeholder-shown) + .label {
-      color: rgba(0, 0, 0, 0.5);
-      transform: translate3d(0, -8px, 0) scale(0.7);
+      color: rgba(0, 0, 0, 0.5) !important;
+      transform: translate3d(0, -8px, 0) scale(0.7) !important;
     }
     .inp input:focus {
-      background: rgba(0, 0, 0, 0.05);
-      outline: none;
-      box-shadow: inset 0 -2px 0 rgb(50 54 57);
+      background: rgba(0, 0, 0, 0.05) !important;
+      outline: none !important;
+      box-shadow: inset 0 -2px 0 -1px rgb(50 54 57) !important;
     }
     .inp input:focus + .label {
-      color: rgb(50 54 57);
-      transform: translate3d(0, -8px, 0) scale(0.7);
+      color: rgb(50 54 57) !important;
+      transform: translate3d(0, -8px, 0) scale(0.7) !important;
     }
     .inp input:focus + .label + .focus-bg {
-      transform: scaleX(1);
-      transition: all 0.1s ease;
+      transform: scaleX(1) !important;
+      transition: all 0.1s ease !important;
     }
   }
   &.active-modal-sign {
     .modal-box-sign-ved {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translate(-50%, -50%) scale(1);
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      transform: translate(-50%, -50%) scale(1) !important;
     }
   }
 
   .list-signers-ved {
-    position: relative;
-    width: 100%;
+    position: relative !important;
+    width: 100% !important;
   }
 
   .list-signers-ved .head {
-    padding: 20px 0;
-    margin: 0 30px;
-    border-bottom: 1px solid rgba(2, 132, 199, 0.5);
+    padding: 20px 0 !important;
+    margin: 0 30px !important;
+    border-bottom: 1px solid rgba(2, 132, 199, 0.5) !important;
   }
 
   .list-signers-ved .title {
-    font-family: 'fredericka the great', cursive;
-    font-weight: 500;
-    text-align: center;
-    font-size: 2.5rem;
-    color: rgba(2, 132, 199, 0.8);
+    font-weight: 500 !important;
+    text-align: center !important;
+    font-size: 2.5rem !important;
+    color: rgba(2, 132, 199, 0.8) !important;
   }
 
   .list-signers-ved .subtitle {
-    font-size: 0.9rem;
-    text-align: center;
-    letter-spacing: 0.5px;
+    font-size: 0.9rem !important;
+    text-align: center !important;
+    letter-spacing: 0.5px !important;
   }
 
   .list-signers-ved .ul-ved {
-    list-style: none;
-    padding: 4px 0;
-    font-weight: 300;
-    margin-right: 10px;
+    list-style: none !important;
+    padding: 4px 0 !important;
+    font-weight: 300 !important;
+    margin-right: 10px !important;
   }
 
   .list-signers-ved .ul-ved li {
-    position: relative;
-    display: block;
-    margin: 24px 0;
-    height: 14px;
-    padding-bottom: 15px;
+    position: relative !important;
+    display: block !important;
+    margin: 12px 0 !important;
+    height: 30px !important;
+    padding-bottom: 15px !important;
+    border-bottom: solid 1px #dedede;
   }
 
   .list-signers-ved .ul-ved .text {
-    float: left;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
+    float: left !important;
+    font-size: 1rem !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease-in-out !important;
   }
 
   .ul-ved li:nth-of-type(2) {
@@ -350,82 +290,38 @@
   }
 
   .list-signers-ved .ul-ved .button {
-    position: relative;
-    z-index: 2;
-    box-sizing: border-box;
-    float: right;
-    width: 20px;
-    height: 20px;
-    border: 1px solid fade-out(rgb(2, 132, 199), 0.5);
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  .list-signers-ved .ul-ved .checkmark-ved {
-    position: absolute;
-    stroke: rgba(2, 132, 199, 0.5);
-    fill: none;
-    stroke-dashoffset: 340;
-    stroke-dasharray: 360;
-  }
-
-  .list-signers-ved .ul-ved input {
-    display: none;
+    position: relative !important;
+    z-index: 2 !important;
+    box-sizing: border-box !important;
+    float: right !important;
+    border-radius: 50% !important;
   }
 
   .ul-ved li .wrapper {
-    position: absolute;
-    width: 20px;
-    right: 0;
-  }
-
-  .list-signers-ved .ul-ved input:checked ~ {
-    .text {
-      color: rgba(2, 132, 199, 0.5);
-    }
-    .wrapper .checkmark-ved {
-      animation: dash-signers-ved 0.5s ease-out forwards;
-      opacity: 1;
-    }
-    .button {
-      opacity: 0;
-    }
-  }
-
-  .checkmark-ved {
-    display: block;
-    stroke-width: 8;
-    opacity: 0;
-  }
-
-  @keyframes dash-signers-ved {
-    0% {
-      stroke-dashoffset: 340;
-    }
-    100% {
-      stroke-dashoffset: 0;
-    }
+    position: absolute !important;
+    width: 20px !important;
+    right: 0 !important;
   }
 
   #signs-list-ved::-webkit-scrollbar {
-    background-color: #fff;
-    width: 16px;
+    background-color: #fff !important;
+    width: 16px !important;
   }
 
   /* background of the scrollbar except button or resizer */
   #signs-list-ved::-webkit-scrollbar-track {
-    background-color: #fff;
+    background-color: #fff !important;
   }
 
   /* scrollbar itself */
   #signs-list-ved::-webkit-scrollbar-thumb {
-    background-color: #babac0;
-    border-radius: 16px;
-    border: 4px solid #fff;
+    background-color: #babac0 !important;
+    border-radius: 16px !important;
+    border: 4px solid #fff !important;
   }
 
   /* set button(top and bottom of the scrollbar) */
   #signs-list-ved::-webkit-scrollbar-button {
-    display: none;
+    display: none !important;
   }
 }

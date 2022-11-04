@@ -6,16 +6,7 @@
     @dragover.prevent="start"
     @dragleave.prevent="reverse"
   >
-    <lottie-animation
-      id="anim-ref-ved"
-      ref="animRef"
-      :loop="false"
-      :autoPlay="false"
-      :speed="1"
-      :animationData="animationData"
-      @complete="complete"
-      class="ved-h-14"
-    />
+    <FileIcon class="ved-h-10 ved-p-1" />
 
     <div
       class="ved-flex ved-flex-col ved-justify-start ved-pl-1 ved-items-center sm:ved-items-start"
@@ -52,12 +43,13 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { Icon } from '@/widgets';
+import { Icon, FileIcon } from '@/widgets';
 import Information from 'vue-material-design-icons/Information.vue';
-import animationData from '@/assets/animation/upload-file.json';
+
 export default defineComponent({
   components: {
     Icon,
+    FileIcon,
   },
   props: {
     browserLink: {
@@ -85,29 +77,17 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props, { emit }) {
-    const animRef = ref<any>(null);
-
+  setup(_, { emit }) {
     const start = () => {
       emit('hover', true);
-      animRef.value?.setDirection(1);
-      animRef.value?.play();
-    };
-    const complete = () => {
-      animRef.value?.pause();
     };
 
     const reverse = () => {
       emit('leave', false);
-      animRef.value?.setDirection(-1);
-      animRef.value?.play();
     };
 
     return {
-      animRef,
-      animationData,
       start,
-      complete,
       reverse,
       Information,
     };

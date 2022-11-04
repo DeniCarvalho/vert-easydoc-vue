@@ -1,28 +1,30 @@
 {
-  "name": "vert-easydoc-vue",
+  "name": "vert-sign-vue",
   "description": "A library to manipulate documents and make them signable",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/vert-easydoc-vue.umd.js",
-  "module": "./dist/vert-easydoc-vue.es.js",
+  "main": "./dist/vert-sign-vue.umd.js",
+  "module": "./dist/vert-sign-vue.es.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/vert-easydoc-vue.es.js",
-      "require": "./dist/vert-easydoc-vue.umd.js"
+      "import": "./dist/vert-sign-vue.es.js",
+      "require": "./dist/vert-sign-vue.umd.js"
     },
     "./style.css": "./dist/style.css"
   },
+  "sideEffects": [
+    "*.css"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --emitDeclarationOnly && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "lottie-web-vue": "2.0.6",
     "vue": "3.2.41",
     "vue-material-design-icons": "5.1.2"
   },

@@ -1,8 +1,11 @@
 <template>
   <div id="preview-step-ved" class="ved-w-auto">
     <div class="cursor-zone-ved">
-      <div class="cursor-page-ved"></div>
-      <div class="mark-ved"></div>
+      <div
+        class="mark-ved ved-w-full ved-h-full ved-flex ved-flex-col ved-justify-center ved-items-center"
+      >
+        <Icon :icon="Download" class="mark-icon-ved" />
+      </div>
     </div>
     <div
       class="tools-ved ved-w-full ved-h-14 ved-shadow-md ved-grid ved-grid-cols-3 ved-z-20 ved-fixed"
@@ -143,7 +146,7 @@
           @click="formTab = 0"
           :class="{
             'ved-shadow-lg ved-bg-sky-600 ved-text-white': formTab == 0,
-            'ved-text-black': formTab != 0,
+            'ved-text-black ved-bg-gray-100': formTab != 0,
           }"
           class="ved-px-2 ved-py-1.5 ved-rounded ved-outline-none ved-transform active:ved-scale-x-75 ved-transition-transform ved-flex ved-justify-center ved-items-center ved-border-0 ved-cursor-pointer ved-w-auto"
         >
@@ -154,7 +157,7 @@
           @click="formTab = 1"
           :class="{
             'ved-shadow-lg ved-bg-sky-600 ved-text-white': formTab == 1,
-            'ved-text-black': formTab != 1,
+            'ved-text-black ved-bg-gray-100': formTab != 1,
           }"
           class="ved-ml-2 ved-px-2 ved-py-1.5 ved-rounded ved-outline-none ved-transform active:ved-scale-x-75 ved-transition-transform ved-flex ved-justify-center ved-items-center ved-border-0 ved-cursor-pointer ved-w-auto"
         >
@@ -203,7 +206,7 @@
           <div>
             <button
               type="submit"
-              class="ved-bg-cyan-600 hover:ved-bg-cyan-700 ved-text-white ved-font-bold ved-py-2 ved-px-4 ved-rounded ved-border-0 ved-cursor-pointer"
+              class="ved-bg-sky-600 hover:ved-bg-sky-700 ved-text-white ved-font-bold ved-py-2 ved-px-4 ved-rounded ved-border-0 ved-cursor-pointer"
             >
               {{ formSign.id ? 'Atualizar' : 'Adicionar' }}
             </button>
@@ -244,52 +247,30 @@
         >
           <div class="list-signers-ved ved-z-10 ved-absolute">
             <ul class="ul-ved">
-              <li v-for="(party, i) in partiesDefault" :key="i">
-                <input
-                  type="checkbox"
-                  :id="'party-sign-exist-' + i"
-                  :name="'party-sign-exist-' + i"
-                />
-                <label
-                  :for="'party-sign-exist-' + i"
-                  class="text"
-                  @click="selectSign(party)"
-                >
-                  <div class="ved-w-auto ved-flex ved-justify-start">
+              <li
+                v-for="(party, i) in partiesDefault"
+                :key="i"
+                @click="selectSign(party)"
+                class="ved-cursor-pointer"
+              >
+                <label :for="'party-sign-exist-' + i" class="text">
+                  <div
+                    class="ved-w-auto ved-flex ved-justify-start ved-text-black"
+                  >
                     {{ party.name }}
                   </div>
                   <div
-                    class="ved-text-xs ved-w-auto ved-flex ved-justify-start"
+                    class="ved-text-xs ved-w-auto ved-flex ved-justify-start ved-text-black"
                   >
                     {{ party.email }}
                   </div>
                 </label>
-                <label
-                  :for="'party-sign-exist-' + i"
-                  class="button"
-                  @click="selectSign(party)"
-                ></label>
                 <div class="wrapper">
-                  <svg
-                    version="1.1"
-                    id="Layer_1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    x="0px"
-                    y="0px"
-                    viewBox="0 0 98.5 98.5"
-                    enable-background="new 0 0 98.5 98.5"
-                    xml:space="preserve"
-                  >
-                    <path
-                      class="checkmark-ved"
-                      fill="none"
-                      stroke-width="8"
-                      stroke-miterlimit="10"
-                      d="M81.7,17.8C73.5,9.3,62,4,49.2,4
-	C24.3,4,4,24.3,4,49.2s20.3,45.2,45.2,45.2s45.2-20.3,45.2-45.2c0-8.6-2.4-16.6-6.5-23.4l0,0L45.6,68.2L24.7,47.3"
-                    />
-                  </svg>
+                  <Icon
+                    :icon="ChevronRight"
+                    :size="22"
+                    class="ved-text-black"
+                  />
                 </div>
               </li>
             </ul>
@@ -335,6 +316,8 @@ import Reload from 'vue-material-design-icons/Reload.vue';
 import Check from 'vue-material-design-icons/CheckBold.vue';
 import Menu from 'vue-material-design-icons/Menu.vue';
 import Trash from 'vue-material-design-icons/TrashCan.vue';
+import Download from 'vue-material-design-icons/Download.vue';
+import ChevronRight from 'vue-material-design-icons/ChevronRight.vue';
 import {
   IDataSign,
   IDocument,
@@ -345,7 +328,6 @@ import {
   ISignHereTab,
 } from '@/models/document.model';
 import Icon from '@/widgets/Icon/Icon.vue';
-import Sign from './components/Sign/Sign.vue';
 
 export default defineComponent({
   props: {
@@ -357,7 +339,7 @@ export default defineComponent({
       required: false,
     },
   },
-  components: { Icon, Sign },
+  components: { Icon },
   setup(props, { emit }) {
     const doc = ref<IDocument>(props.file as IDocument);
     const menuPagesOpen = ref<boolean>(false);
@@ -477,8 +459,8 @@ export default defineComponent({
       const mouseY = event.clientY - rect.top;
 
       const zIndex = '999980';
-      const yPosition: number = Math.round(mouseY - 45);
-      const xPosition: number = Math.round(mouseX);
+      const yPosition: number = Math.round(mouseY - 47);
+      const xPosition: number = Math.round(mouseX - 50);
       const div = document.createElement('div');
       div.style.position = 'absolute';
       div.style.top = yPosition + 'px';
@@ -493,11 +475,10 @@ export default defineComponent({
         mouseUpSign(e);
       });
 
-      div.addEventListener('click', (el: any) => {
+      div.addEventListener('click', (_: any) => {
         openAddSign(id);
       });
 
-      // target.parentElement.appendChild(div);
       modalSign.value = {
         target,
         div,
@@ -553,22 +534,15 @@ export default defineComponent({
           yPosition: 0,
         };
       }
-      cursor.value?.classList.add('cursor-zone-ved__expand');
 
       const page = document.querySelector('#preview-step-ved');
       page?.classList.add('active-modal-sign');
-
-      setTimeout(() => {
-        cursor.value?.classList.remove('cursor-zone-ved__expand');
-      }, 500);
     };
 
     const selectSign = (sign: IPartyDefault) => {
       formSign.value.name = sign.name;
       formSign.value.email = sign.email;
-      setTimeout(() => {
-        addSign();
-      }, 800);
+      addSign();
     };
 
     const addSign = () => {
@@ -775,7 +749,7 @@ export default defineComponent({
         element?.addEventListener('mousemove', function (e: any) {
           cursor.value?.setAttribute(
             'style',
-            'top: ' + (e.pageY - 10) + 'px; left: ' + (e.pageX - 10) + 'px;'
+            'top: ' + (e.pageY - 2) + 'px; left: ' + (e.pageX - 50) + 'px;'
           );
         });
       }
@@ -883,6 +857,8 @@ export default defineComponent({
       Check,
       Menu,
       Trash,
+      Download,
+      ChevronRight,
     };
   },
 });
