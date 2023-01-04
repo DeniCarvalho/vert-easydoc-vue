@@ -1,7 +1,7 @@
 <template>
   <div id="input-file-ved" ref="inputFileVed" class="ved-w-full ved-relative">
     <label
-      v-if="!fileLinkParent && uploadProgress === undefined && !loading"
+      v-if="!hasFileParent && uploadProgress === undefined && !loading"
       @drop.prevent="onDrop"
       :for="uniqueId"
       ref="labelFileRef"
@@ -59,21 +59,23 @@
     />
 
     <Done
-      v-if="fileLinkParent && !loading"
-      :link="fileLinkParent"
+      v-if="hasFileParent && !loading"
+      :hasFile="hasFileParent"
+      :downloadLoading="downloadLoadingParent"
+      :hideRemove="hideRemoveParent"
       :filename="
         fileName || (file?.name && file?.name != '' ? file?.name : 'Arquivo')
       "
       @remove="removeFile"
+      @download="downloadFile"
     />
 
     <Saving v-if="loading" />
 
     <Uploading
       :class="{
-        'ved-block':
-          !fileLinkParent && uploadProgress !== undefined && !loading,
-        'ved-hidden': fileLinkParent || uploadProgress === undefined,
+        'ved-block': !hasFileParent && uploadProgress !== undefined && !loading,
+        'ved-hidden': hasFileParent || uploadProgress === undefined,
       }"
       :uploadProgress="uploadProgress"
       @cancel="uploadCancel"
@@ -119,8 +121,16 @@ export default defineComponent({
   name: 'VSInput',
   components: { Small, Medium, Large, Uploading, Done, Modal, Saving },
   props: {
-    fileLink: {
-      type: String,
+    hasFile: {
+      type: Boolean,
+      required: false,
+    },
+    downloadLoading: {
+      type: Boolean,
+      required: false,
+    },
+    hideRemove: {
+      type: Boolean,
       required: false,
     },
     fileName: {
@@ -209,7 +219,11 @@ export default defineComponent({
 
     const documentFile = ref<File>();
     const file = ref<IDocument>();
-    const fileLinkParent = ref<string | undefined>(props.fileLink);
+    const hasFileParent = ref<boolean | undefined>(props.hasFile);
+    const downloadLoadingParent = ref<boolean | undefined>(
+      props.downloadLoading
+    );
+    const hideRemoveParent = ref<boolean | undefined>(props.hideRemove);
     const uploadProgress = ref<number>();
 
     const request = ref<XMLHttpRequest>(new XMLHttpRequest());
@@ -280,9 +294,13 @@ export default defineComponent({
     const removeFile = () => {
       file.value = undefined;
       documentFile.value = undefined;
-      fileLinkParent.value = undefined;
+      hasFileParent.value = undefined;
 
       emit('remove');
+    };
+
+    const downloadFile = () => {
+      emit('download');
     };
 
     const onFileChange = (e: any) => {
@@ -371,10 +389,28 @@ export default defineComponent({
     });
 
     watch(
-      () => props.fileLink,
+      () => props.hasFile,
       (value) => {
         if (value) {
-          fileLinkParent.value = value as string | undefined;
+          hasFileParent.value = value as boolean | undefined;
+        }
+      }
+    );
+
+    watch(
+      () => props.downloadLoading,
+      (value) => {
+        if (value) {
+          downloadLoadingParent.value = value as boolean | undefined;
+        }
+      }
+    );
+
+    watch(
+      () => props.hideRemove,
+      (value) => {
+        if (value) {
+          hideRemoveParent.value = value as boolean | undefined;
         }
       }
     );
@@ -395,7 +431,9 @@ export default defineComponent({
       modalRef,
       isHover,
       file,
-      fileLinkParent,
+      hasFileParent,
+      downloadLoadingParent,
+      hideRemoveParent,
       uploadProgress,
       onFileChange,
       onDrop,
@@ -403,6 +441,7 @@ export default defineComponent({
       openInfo,
       uploadCancel,
       removeFile,
+      downloadFile,
       onFinish,
     };
   },

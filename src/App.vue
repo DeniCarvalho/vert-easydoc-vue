@@ -13,7 +13,7 @@
       :labels="config.labels"
       :settings="config.settings"
       :colors="config.colors"
-      :fileLink="urlFileSmall"
+      :hasFile="urlFileSmall"
       :loading="loadingSmall"
       :fileName="fileNameSmall"
       :parties="[
@@ -27,7 +27,8 @@
         },
       ]"
       @send="sendSmall"
-      @remove="urlFileSmall = ''"
+      @remove="urlFileSmall = false"
+      @download="downloadFile"
     />
     <div class="ved-w-full ved-my-4 ved-mt-10">
       <h4 class="ved-text-primaryPure ved-p-0 ved-pb-2 ved-m-0">Medium</h4>
@@ -37,11 +38,12 @@
       :labels="config.labels"
       :settings="config.settings"
       :colors="config.colors"
-      :fileLink="urlFileMedium"
+      :hasFile="urlFileMedium"
       :loading="loadingMedium"
       :fileName="fileNameMedium"
       @send="sendMedium"
-      @remove="urlFileMedium = ''"
+      @remove="urlFileMedium = false"
+      @download="downloadFile"
     />
 
     <div class="ved-w-full ved-my-4 ved-mt-10">
@@ -54,11 +56,12 @@
       :labels="config.labels"
       :settings="config.settings"
       :colors="config.colors"
-      :fileLink="urlFileLarge"
+      :hasFile="urlFileLarge"
       :loading="loadingLarge"
       :fileName="fileNameLarge"
       @send="sendLarge"
-      @remove="urlFileLarge = ''"
+      @remove="urlFileLarge = false"
+      @download="downloadFile"
     />
   </div>
 </template>
@@ -85,22 +88,22 @@ export default defineComponent({
         maxSize: 'Tamanho',
       },
       settings: {
-        endpoint: 'http://localhost:5005/api/v1/go',
+        endpoint: 'http://localhost:5005/api/v1/upload',
         // maxSize: '12MB',
       },
     });
 
     const loadingSmall = ref(false);
-    const urlFileSmall = ref<string>('');
+    const urlFileSmall = ref<boolean>(false);
     const fileNameSmall = ref<string>('');
 
     const loadingMedium = ref(false);
     const fileNameMedium = ref<string>('');
-    const urlFileMedium = ref<string>('');
+    const urlFileMedium = ref<boolean>(false);
 
     const loadingLarge = ref(false);
     const fileNameLarge = ref<string>('');
-    const urlFileLarge = ref<string>('');
+    const urlFileLarge = ref<boolean>(false);
 
     const request = ref<XMLHttpRequest>(new XMLHttpRequest());
 
@@ -111,8 +114,7 @@ export default defineComponent({
         (res: any) => {
           console.log(res);
           fileNameSmall.value = data.name;
-          urlFileSmall.value =
-            'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+          urlFileSmall.value = true;
           loadingSmall.value = false;
         },
         (error: any) => {
@@ -128,8 +130,7 @@ export default defineComponent({
         (res: any) => {
           console.log(res);
           fileNameMedium.value = data.name;
-          urlFileMedium.value =
-            'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+          urlFileMedium.value = true;
           loadingMedium.value = false;
         },
         (error: any) => {
@@ -145,8 +146,7 @@ export default defineComponent({
         (res: any) => {
           console.log(res);
           fileNameLarge.value = data.name;
-          urlFileLarge.value =
-            'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+          urlFileLarge.value = true;
           loadingLarge.value = false;
         },
         (error: any) => {
@@ -213,6 +213,22 @@ export default defineComponent({
       request.value.send(JSON.stringify(payload));
     };
 
+    const downloadFile = async () => {
+      try {
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.target = '_blank';
+        a.href =
+          'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+        a.download = `contrato.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(
+          'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+        );
+      } catch (error) {}
+    };
+
     return {
       config,
       SizeEnum,
@@ -228,6 +244,7 @@ export default defineComponent({
       sendSmall,
       sendMedium,
       sendLarge,
+      downloadFile,
     };
   },
 });
