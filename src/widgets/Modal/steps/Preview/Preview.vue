@@ -148,9 +148,9 @@
             'ved-shadow-lg ved-bg-sky-600 ved-text-white': formTab == 0,
             'ved-text-black ved-bg-gray-100': formTab != 0,
           }"
-          class="ved-px-2 ved-py-1.5 ved-rounded ved-outline-none ved-transform active:ved-scale-x-75 ved-transition-transform ved-flex ved-justify-center ved-items-center ved-border-0 ved-cursor-pointer ved-w-auto"
+          class="ved-ml-2 ved-px-2 ved-py-1.5 ved-rounded ved-outline-none ved-transform active:ved-scale-x-75 ved-transition-transform ved-flex ved-justify-center ved-items-center ved-border-0 ved-cursor-pointer ved-w-auto"
         >
-          <div class="">Novo</div>
+          <div class="">Selecionar</div>
         </button>
         <button
           type="button"
@@ -159,13 +159,13 @@
             'ved-shadow-lg ved-bg-sky-600 ved-text-white': formTab == 1,
             'ved-text-black ved-bg-gray-100': formTab != 1,
           }"
-          class="ved-ml-2 ved-px-2 ved-py-1.5 ved-rounded ved-outline-none ved-transform active:ved-scale-x-75 ved-transition-transform ved-flex ved-justify-center ved-items-center ved-border-0 ved-cursor-pointer ved-w-auto"
+          class="ved-px-2 ved-py-1.5 ved-rounded ved-outline-none ved-transform active:ved-scale-x-75 ved-transition-transform ved-flex ved-justify-center ved-items-center ved-border-0 ved-cursor-pointer ved-w-auto"
         >
-          <div class="">Escolher existentes</div>
+          <div class="">Novo</div>
         </button>
       </div>
       <form
-        v-if="formTab == 0"
+        v-if="formTab == 1"
         class="ved-w-full ved-mt-5 ved-flex ved-flex-col ved-justify-start ved-items-start"
         @submit.prevent="addSign"
       >
@@ -711,9 +711,9 @@ export default defineComponent({
       () => formSign.value.name,
       function (value) {
         if (value) {
-          formSign.value.name = value.replace(/[^a-zA-Z ]/g, '');
+          // formSign.value.name = value.replace(/[^a-zA-Z ]/g, '');
           // To lower case
-          formSign.value.name = formSign.value.name.toLowerCase();
+          formSign.value.name = formSign.value.name.toLowerCase().trim();
           //Came case to upper
           formSign.value.name = formSign.value.name
             .split(' ')
@@ -727,9 +727,9 @@ export default defineComponent({
       () => formSign.value.email,
       function (value) {
         if (value) {
-          formSign.value.email = value.replace(/[^a-zA-Z0-9@.]/g, '');
+          formSign.value.email = value.replace(/[^a-zA-Z0-9@.-]/g, '');
           // To lower case
-          formSign.value.email = formSign.value.email.toLowerCase();
+          formSign.value.email = formSign.value.email.toLowerCase().trim();
         }
       }
     );

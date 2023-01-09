@@ -16,7 +16,7 @@
         class="ved-text-primaryPure ved-mr-2 ved-cursor-pointer"
         :title="'Download'"
         @click="downloadFile"
-        v-if="!downloadLoading"
+        v-if="!downloadLoadingParent"
       />
       <div class="ved-mr-2" v-else>
         <svg
@@ -42,13 +42,13 @@
         class="ved-text-primaryPure ved-cursor-pointer"
         :title="'Excluir'"
         @click="$emit('remove')"
-        v-if="!hideRemove"
+        v-if="!hideRemoveParent"
       />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, onMounted, ref, watch } from 'vue';
 import { Modal, Icon } from '@/widgets';
 import CheckCircle from 'vue-material-design-icons/CheckCircle.vue';
 import TrashCan from 'vue-material-design-icons/TrashCan.vue';
@@ -83,11 +83,37 @@ export default defineComponent({
     const { parseColor } = useColor();
     const bgDoneRef = ref<any>(null);
     const styleRoot = ref<any>(null);
+    const downloadLoadingParent = ref<boolean | undefined>(
+      props.downloadLoading
+    );
+    const hideRemoveParent = ref<boolean | undefined>(props.hideRemove);
 
     const downloadFile = async () => {
       if (!props.hasFile) return;
       emit('download');
     };
+
+    watch(
+      () => props.downloadLoading,
+      (value) => {
+        if (value) {
+          downloadLoadingParent.value = true;
+        } else {
+          downloadLoadingParent.value = false;
+        }
+      }
+    );
+
+    watch(
+      () => props.hideRemove,
+      (value) => {
+        if (value) {
+          hideRemoveParent.value = true;
+        } else {
+          hideRemoveParent.value = false;
+        }
+      }
+    );
 
     onMounted(function () {
       styleRoot.value = getComputedStyle(document.body);
@@ -102,6 +128,8 @@ export default defineComponent({
 
     return {
       bgDoneRef,
+      hideRemoveParent,
+      downloadLoadingParent,
       CheckCircle,
       downloadFile,
       TrashCan,

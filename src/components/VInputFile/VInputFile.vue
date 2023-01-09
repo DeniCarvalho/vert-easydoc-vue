@@ -391,9 +391,7 @@ export default defineComponent({
     watch(
       () => props.hasFile,
       (value) => {
-        if (value) {
-          hasFileParent.value = value as boolean | undefined;
-        }
+        hasFileParent.value = value;
       }
     );
 
@@ -401,7 +399,9 @@ export default defineComponent({
       () => props.downloadLoading,
       (value) => {
         if (value) {
-          downloadLoadingParent.value = value as boolean | undefined;
+          downloadLoadingParent.value = true;
+        } else {
+          downloadLoadingParent.value = false;
         }
       }
     );
@@ -410,7 +410,9 @@ export default defineComponent({
       () => props.hideRemove,
       (value) => {
         if (value) {
-          hideRemoveParent.value = value as boolean | undefined;
+          hideRemoveParent.value = true;
+        } else {
+          hideRemoveParent.value = false;
         }
       }
     );

@@ -26,9 +26,10 @@
           email: 'carol@gmail.com',
         },
       ]"
+      :downloadLoading="downloadLoading"
       @send="sendSmall"
       @remove="urlFileSmall = false"
-      @download="downloadFile"
+      @download="downloadFile(fileNameSmall)"
     />
     <div class="ved-w-full ved-my-4 ved-mt-10">
       <h4 class="ved-text-primaryPure ved-p-0 ved-pb-2 ved-m-0">Medium</h4>
@@ -43,7 +44,7 @@
       :fileName="fileNameMedium"
       @send="sendMedium"
       @remove="urlFileMedium = false"
-      @download="downloadFile"
+      @download="downloadFile(fileNameMedium)"
     />
 
     <div class="ved-w-full ved-my-4 ved-mt-10">
@@ -61,7 +62,7 @@
       :fileName="fileNameLarge"
       @send="sendLarge"
       @remove="urlFileLarge = false"
-      @download="downloadFile"
+      @download="downloadFile(fileNameLarge)"
     />
   </div>
 </template>
@@ -70,7 +71,6 @@
 import { defineComponent, reactive, ref } from 'vue';
 import { VInputFile } from '@/components';
 import { SizeEnum } from '@/enums/size.enum';
-import { url } from 'inspector';
 export default defineComponent({
   name: 'App',
   components: {
@@ -88,7 +88,7 @@ export default defineComponent({
         maxSize: 'Tamanho',
       },
       settings: {
-        endpoint: 'http://localhost:5005/api/v1/upload',
+        endpoint: 'http://localhost:8080/api/integrations/pdf-custom/upload/',
         // maxSize: '12MB',
       },
     });
@@ -96,6 +96,7 @@ export default defineComponent({
     const loadingSmall = ref(false);
     const urlFileSmall = ref<boolean>(false);
     const fileNameSmall = ref<string>('');
+    const downloadLoading = ref<boolean>(false);
 
     const loadingMedium = ref(false);
     const fileNameMedium = ref<string>('');
@@ -109,19 +110,11 @@ export default defineComponent({
 
     const sendSmall = (data: any) => {
       loadingSmall.value = true;
-      sendRequest(
-        data,
-        (res: any) => {
-          console.log(res);
-          fileNameSmall.value = data.name;
-          urlFileSmall.value = true;
-          loadingSmall.value = false;
-        },
-        (error: any) => {
-          loadingSmall.value = false;
-          console.log(error);
-        }
-      );
+      setTimeout(() => {
+        fileNameSmall.value = data.name;
+        urlFileSmall.value = true;
+        loadingSmall.value = false;
+      }, 3000);
     };
     const sendMedium = (data: any) => {
       loadingMedium.value = true;
@@ -213,20 +206,22 @@ export default defineComponent({
       request.value.send(JSON.stringify(payload));
     };
 
-    const downloadFile = async () => {
+    const downloadFile = async (name: string) => {
       try {
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.target = '_blank';
-        a.href =
-          'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
-        a.download = `contrato.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(
-          'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-        );
-      } catch (error) {}
+        downloadLoading.value = true;
+        setTimeout(() => {
+          const docUrl: any = document.createElement('a');
+          docUrl.href =
+            'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+          docUrl.setAttribute('download', `${name}.pdf`);
+          document.body.appendChild(docUrl);
+          docUrl.click();
+          downloadLoading.value = false;
+        }, 2500);
+      } catch (error) {
+        downloadLoading.value = false;
+        console.log(error);
+      }
     };
 
     return {
@@ -235,6 +230,7 @@ export default defineComponent({
       loadingSmall,
       urlFileSmall,
       fileNameSmall,
+      downloadLoading,
       urlFileMedium,
       loadingMedium,
       fileNameMedium,
